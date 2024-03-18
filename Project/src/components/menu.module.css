@@ -3,7 +3,7 @@
     position: absolute;
     background: white;
     border: 1px solid theme(colors.neutral.300);
-    top: 17px;
+    top: 24px;
     left: 50%;
     -webkit-transform: translate(-50%);
     z-index: 1;
@@ -11,6 +11,7 @@
 
 .menu-button {
     position: relative;
+    padding-top: 8px;
 }
 
 .menu-button:hover .drop-down-menu {

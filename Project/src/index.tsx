@@ -5,7 +5,20 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import { store } from "./store/store";
+import { timerSlice } from "./store/slicies/timer-slice";
+import { configureAppStore } from "./store/store";
+
+const store = configureAppStore({});
+store.dispatch(timerSlice.actions.create(65000));
+
+let prevTime = Date.now();
+setInterval(() => {
+  const delta = Date.now() - prevTime;
+  prevTime = Date.now();
+  if (store.getState().timer.isRunning) {
+    store.dispatch(timerSlice.actions.updateTime(delta));
+  }
+}, 50);
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

@@ -1,28 +1,29 @@
 export function Button({
   text,
   onClick,
+  disabled = false,
   variant,
 }: {
   text: string;
   onClick?: () => void;
-  variant: "normal" | "pseudo" | "danger" | "round";
+  disabled?: boolean;
+  variant: "normal" | "danger" | "round";
 }) {
   let className =
     variant !== "round"
-      ? "cursor-pointer px-12 py-4 w-fit "
+      ? "px-12 py-4 w-fit "
       : "cursor-pointer flex justify-center items-center rounded-full w-[50px] h-[50px] bg-light-text hover:bg-green text-white text-[32px] font-light";
-  if (variant === "normal") {
-    className += "bg-light-green hover:bg-green text-white";
-  } else if (variant === "danger") {
-    className += "bg-light-red hover:bg-red";
-  } else if (variant === "pseudo") {
-    className += "text-light-text border-2 border-light-text";
+  if (disabled) {
+    className += "cursor-default text-light-text border-2 border-light-text";
+  } else {
+    if (variant === "normal") {
+      className += "cursor-pointer bg-light-green hover:bg-green text-white";
+    } else if (variant === "danger") {
+      className += "cursor-pointer bg-light-red hover:bg-red";
+    }
   }
   return (
-    <div
-      className={className}
-      onClick={variant === "pseudo" ? onClick : () => {}}
-    >
+    <div className={className} onClick={!disabled ? onClick : () => {}}>
       {text}
     </div>
   );

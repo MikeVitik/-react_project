@@ -1,22 +1,9 @@
-import { Menu } from "../../components/Menu";
-import { MenuItem } from "../../components/MenuItem";
-import { MinusIcon } from "../../components/icons/Minus";
-import { PlusIcon } from "../../components/icons/Plus";
 import { Description } from "./components/Description";
 import { TaskActions } from "./components/TaskActions";
 import { TaskDescription } from "./components/TaskDescription";
 import { TaskHeader } from "./components/TaskHeader";
 import { Tasks } from "./components/Tasks";
 import { Timer } from "./components/Timer";
-
-export function TaskMenu() {
-  return (
-    <Menu>
-      <MenuItem IconComponent={PlusIcon} title={"Добавить"}></MenuItem>
-      <MenuItem IconComponent={MinusIcon} title={"Удалить"} disabled></MenuItem>
-    </Menu>
-  );
-}
 
 export function Home({
   mode = "pause",
@@ -40,21 +27,23 @@ export function Home({
   fullTime: number;
 }>) {
   return (
-    <div className="px-20 pt-24 grid grid-cols-home gap-4">
-      <div>
-        <Description></Description>
-        <Tasks />
+    <>
+      <div className="px-20 pt-24 grid grid-cols-home gap-4">
+        <div>
+          <Description></Description>
+          <Tasks />
+        </div>
+        <div className=" bg-light-gray">
+          <TaskHeader
+            mode={mode}
+            taskName={taskName}
+            pomodoroCount={pomodoroCount}
+          />
+          <Timer />
+          <TaskDescription />
+          <TaskActions />
+        </div>
       </div>
-      <div className=" bg-light-gray">
-        <TaskHeader
-          mode={mode}
-          taskName={taskName}
-          pomodoroCount={pomodoroCount}
-        />
-        <Timer />
-        <TaskDescription />
-        <TaskActions />
-      </div>
-    </div>
+    </>
   );
 }

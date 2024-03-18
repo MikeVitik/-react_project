@@ -1,15 +1,17 @@
+import { useSelector } from "react-redux";
 import { Button } from "../../../components/Button";
+import { getTimerValue } from "../../../store/slicies/timer-slice";
 
 export function Timer() {
-  const currentTime = "25:00";
+  const { m, s } = useSelector(getTimerValue);
   return (
-    <div className="pt-24 grid grid-cols-4 align-middle">
-      <div className="col-start-2 col-span-2">
-        <span className="font-extralight text-[150px] leading-[126px]">
-          {currentTime}
-        </span>
+    <div className="flex pt-24 font-extralight text-[150px] leading-[126px]">
+      <div className="w-1/2 flex flex-row justify-end">
+        <div>{m}</div>
       </div>
-      <div className="justify-self-start self-center pl-8">
+      <div className="leading-[50%]">:</div>
+      <div className="w-1/2 flex items-center">
+        <div className="w-[200px]">{s}</div>
         <Button variant="round" text="+"></Button>
       </div>
     </div>
