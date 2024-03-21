@@ -33,7 +33,7 @@ export function Home({
           <Description></Description>
           <Tasks />
         </div>
-        <div className=" bg-light-gray">
+        <div className="bg-light-gray">
           <TaskHeader
             mode={mode}
             taskName={taskName}
