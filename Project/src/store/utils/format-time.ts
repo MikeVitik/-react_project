@@ -6,7 +6,7 @@ export function getTimeFractions(date: Date) {
 }
 export function formatTime(time: Date) {
   const { h, m, s } = getTimeFractions(time);
-  const sec = s ? `${s}сек` : "";
+  const sec = s ? `${s} сек` : "";
   if (h) {
     return `${h} ч ${m} мин` + sec;
   } else {

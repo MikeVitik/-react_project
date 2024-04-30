@@ -1,11 +1,21 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { formatTime } from "../utils/format-time";
+import { normalizeDay } from "../utils/normalize-day";
 
-const TIME_OF_ONE_POMODORO = 25 * 60 * 1000;
-interface Task {
+export const TIME_OF_ONE_POMODORO = 25 * 60 * 1000;
+export interface SerialiazableTask {
   id: number;
   name: string;
+  startDateString: string;
+  isCompleted: boolean;
   pomodoroCount: number;
+  completedPomodoro?: number;
+  workTime?: number;
+  pauseCount?: number;
+  pauseTime?: number;
+}
+export interface Task extends SerialiazableTask {
+  startDate: Date;
 }
 
 let lastTaskId = 0;
@@ -14,13 +24,22 @@ const taskIdPrepare = (taskId: number) => {
 };
 export const tasksSlice = createSlice({
   name: "tasks",
-  initialState: [] as Task[],
+  initialState: [] as SerialiazableTask[],
   reducers: {
     addTask: {
       prepare: (text: string) => {
-        return { payload: { id: lastTaskId++, name: text, pomodoroCount: 1 } };
+        const currentDate = new Date();
+        return {
+          payload: {
+            id: lastTaskId++,
+            name: text,
+            pomodoroCount: 1,
+            startDateString: currentDate.toUTCString(),
+            isCompleted: false,
+          },
+        };
       },
-      reducer: (state, action: PayloadAction<Task>) => {
+      reducer: (state, action: PayloadAction<SerialiazableTask>) => {
         state.push(action.payload);
       },
     },
@@ -43,17 +62,17 @@ export const tasksSlice = createSlice({
           payload: { text, taskId },
         }: PayloadAction<{ taskId: number; text: string }>
       ) => {
-        const taskIndex = tasksSlice.getSelectors().getTaskIndex(state, taskId);
-        state[taskIndex].name = text;
+        const task = tasksSlice.getSelectors().getTask(state, taskId);
+        task.name = text;
       },
     },
     incrementPomodoro: {
       prepare: taskIdPrepare,
       reducer: (state, action: PayloadAction<{ taskId: number }>) => {
-        const taskIndex = tasksSlice
+        const task = tasksSlice
           .getSelectors()
-          .getTaskIndex(state, action.payload.taskId);
-        state[taskIndex].pomodoroCount += 1;
+          .getTask(state, action.payload.taskId);
+        task.pomodoroCount += 1;
       },
     },
     decrementPomodoro: {
@@ -64,15 +83,20 @@ export const tasksSlice = createSlice({
             .getSelectors()
             .selectCanDecrement(state, action.payload.taskId)
         ) {
-          const taskIndex = tasksSlice
+          const task = tasksSlice
             .getSelectors()
-            .getTaskIndex(state, action.payload.taskId);
-          state[taskIndex].pomodoroCount -= 1;
+            .getTask(state, action.payload.taskId);
+          task.pomodoroCount -= 1;
         }
       },
     },
   },
   selectors: {
+    getTask: (sliceState, taskId: number): SerialiazableTask => {
+      return sliceState[
+        tasksSlice.getSelectors().getTaskIndex(sliceState, taskId)
+      ];
+    },
     getTaskIndex: (sliceState, taskId: number): number => {
       const taskIndex = sliceState.findIndex(({ id }) => id === taskId);
       if (taskIndex === -1) {
@@ -82,8 +106,7 @@ export const tasksSlice = createSlice({
     },
     selectCanDecrement: (sliceState, taskId: number): boolean => {
       return (
-        sliceState[tasksSlice.getSelectors().getTaskIndex(sliceState, taskId)]
-          .pomodoroCount > 1
+        tasksSlice.getSelectors().getTask(sliceState, taskId).pomodoroCount > 1
       );
     },
     selectTotalTime: (sliceState) => {
@@ -95,6 +118,70 @@ export const tasksSlice = createSlice({
       );
       return formatTime(allTime);
     },
+    filterTasks: (
+      sliceState,
+      filter: "currentWeek" | "pastWeek" | "twoWeeksAgo",
+      currentDate = new Date()
+    ) => {
+      const totalMilisecondInDay = 1000 * 60 * 60 * 24;
+
+      const filterMap = {
+        currentWeek: {
+          startDate: (currentDate: Date) => {
+            return (
+              +currentDate -
+              normalizeDay(currentDate.getDate()) * totalMilisecondInDay
+            );
+          },
+          endDate: (currentDate: Date) => {
+            const daysToWeekend = 7 - normalizeDay(currentDate.getDay());
+            return +currentDate + daysToWeekend * totalMilisecondInDay;
+          },
+        },
+        pastWeek: {
+          startDate: (currentDate: Date) => {
+            return (
+              filterMap["currentWeek"].startDate(currentDate) -
+              7 * totalMilisecondInDay
+            );
+          },
+          endDate: (currentDate: Date) => {
+            return (
+              filterMap["currentWeek"].endDate(currentDate) -
+              7 * totalMilisecondInDay
+            );
+          },
+        },
+        twoWeeksAgo: {
+          startDate: (currentDate: Date) => {
+            return (
+              filterMap["currentWeek"].startDate(currentDate) -
+              14 * totalMilisecondInDay
+            );
+          },
+          endDate: (currentDate: Date) => {
+            return (
+              filterMap["currentWeek"].endDate(currentDate) -
+              14 * totalMilisecondInDay
+            );
+          },
+        },
+      };
+
+      const startDate = new Date(filterMap[filter].startDate(currentDate));
+      const endDate = new Date(filterMap[filter].endDate(currentDate));
+      return sliceState
+        .map(
+          (t): Task => ({
+            ...t,
+            startDate: (t as Task).startDate || new Date(t.startDateString),
+          })
+        )
+        .filter(
+          (t) =>
+            t.isCompleted && t.startDate >= startDate && t.startDate < endDate
+        );
+    },
   },
 });
 
@@ -105,5 +192,10 @@ export const {
   incrementPomodoro,
   decrementPomodoro,
 } = tasksSlice.actions;
-export const { selectCanDecrement, selectTotalTime, getTaskIndex } =
-  tasksSlice.selectors;
+export const {
+  selectCanDecrement,
+  selectTotalTime,
+  getTaskIndex,
+  getTask,
+  filterTasks,
+} = tasksSlice.selectors;

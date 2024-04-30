@@ -2,21 +2,21 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
+import { configureAppStore, updateTime } from "store";
 import App from "./App";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import { timerSlice } from "./store/slicies/timer-slice";
-import { configureAppStore } from "./store/store";
 
-const store = configureAppStore({});
-store.dispatch(timerSlice.actions.create(65000));
+const store = configureAppStore({
+  //  tasks: generateTasks(),
+});
 
 let prevTime = Date.now();
 setInterval(() => {
   const delta = Date.now() - prevTime;
   prevTime = Date.now();
-  if (store.getState().timer.isRunning) {
-    store.dispatch(timerSlice.actions.updateTime(delta));
+  if (store.getState().timer.state === "running") {
+    store.dispatch(updateTime(delta));
   }
 }, 50);
 

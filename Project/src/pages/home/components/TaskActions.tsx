@@ -1,29 +1,31 @@
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { taskActions, useAppDispatch } from "store";
 import { Button } from "../../../components/Button";
-import { timerSlice } from "../../../store/slicies/timer-slice";
 
-export function TaskActions() {
-  const primaryActionName = "Старт";
-  const secondaryActionName = "Стоп";
-  const secondaryActionDisabled = true;
-  const dispatch = useDispatch();
+export const TaskActions = () => {
+  const {
+    primaryActionName,
+    secondaryActionName,
+    primaryAction,
+    secondaryAction,
+  } = useSelector(taskActions);
+
+  const dispatch = useAppDispatch();
+
   return (
     <div className="flex justify-center gap-8 pt-6 pb-24">
       <Button
         text={primaryActionName}
-        onClick={() => {
-          dispatch(timerSlice.actions.toggle());
-        }}
+        onClick={primaryAction ? () => dispatch(primaryAction()) : undefined}
         variant="normal"
       ></Button>
       <Button
         text={secondaryActionName}
-        onClick={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-        disabled={secondaryActionDisabled}
+        onClick={
+          secondaryAction ? () => dispatch(secondaryAction()) : undefined
+        }
         variant="danger"
       ></Button>
     </div>
   );
-}
+};

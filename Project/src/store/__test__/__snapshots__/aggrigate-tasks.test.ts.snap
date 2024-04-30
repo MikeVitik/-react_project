@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`aggrigateTasks should return all week values for one the Monday task 1`] = `
+Object {
+  "completedPomodoro": 40000,
+  "day": 0,
+  "pauseCount": 1,
+  "pauseTime": 17875,
+  "workTime": 145296,
+}
+`;
+
+exports[`aggrigateTasks should return all week values for one the Monday task 2`] = `
+Object {
+  "completedPomodoro": 0,
+  "day": 1,
+  "pauseCount": 0,
+  "pauseTime": 0,
+  "workTime": 0,
+}
+`;
+
+exports[`aggrigateTasks should summarize same day value 1`] = `
+Object {
+  "completedPomodoro": 80000,
+  "day": 0,
+  "pauseCount": 2,
+  "pauseTime": 35750,
+  "workTime": 290592,
+}
+`;

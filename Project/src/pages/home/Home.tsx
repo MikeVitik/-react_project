@@ -5,27 +5,9 @@ import { TaskHeader } from "./components/TaskHeader";
 import { Tasks } from "./components/Tasks";
 import { Timer } from "./components/Timer";
 
-export function Home({
-  mode = "pause",
-  taskName = "Сверстать сайт",
-  pomodoroCount = 1,
-  taskNo = 1,
-  currentTime = "25:00",
-  primaryActionName = "Старт",
-  secondaryActionName = "Стоп",
-  secondaryActionDisabled = true,
-  fullTime = 25,
-}: Partial<{
-  mode: "prepare" | "work" | "pause";
-  taskName: string;
-  pomodoroCount: number;
-  taskNo: number;
-  currentTime: string;
-  primaryActionName: string;
-  secondaryActionName: string;
-  secondaryActionDisabled: boolean;
-  fullTime: number;
-}>) {
+type Modes = "prepare" | "work" | "pause";
+
+export function Home() {
   return (
     <>
       <div className="px-20 pt-24 grid grid-cols-home gap-4">
@@ -34,11 +16,7 @@ export function Home({
           <Tasks />
         </div>
         <div className="bg-light-gray">
-          <TaskHeader
-            mode={mode}
-            taskName={taskName}
-            pomodoroCount={pomodoroCount}
-          />
+          <TaskHeader />
           <Timer />
           <TaskDescription />
           <TaskActions />

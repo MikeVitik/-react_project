@@ -2,7 +2,7 @@ import { taskEditorSlice } from "../slicies/task-editor";
 import { addTask, changeTask } from "../slicies/tasks-slice";
 
 describe("TaskEditorSlice", () => {
-  it("task editor should reset taskName after task added", () => {
+  it("should reset taskName after task added", () => {
     const initialState = {
       ...taskEditorSlice.getInitialState(),
       taskName: "task1",
@@ -12,7 +12,7 @@ describe("TaskEditorSlice", () => {
 
     expect(state.editTaskName).toBe("");
   });
-  it("After changeTask switch to create task", () => {
+  it("after changeTask switch to create task", () => {
     const initialState = {
       ...taskEditorSlice.getInitialState(),
       taskName: "task1",
