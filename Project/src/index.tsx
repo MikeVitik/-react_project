@@ -6,9 +6,10 @@ import { configureAppStore, updateTime } from "store";
 import App from "./App";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
+import { generateTasks } from "./store/store";
 
 const store = configureAppStore({
-  //  tasks: generateTasks(),
+  tasks: generateTasks(),
 });
 
 let prevTime = Date.now();
