@@ -1,5 +1,14 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  RootState,
+  currentTask,
+  decrementPomodoro,
+  deleteTask,
+  editTask,
+  incrementPomodoro,
+  selectCanDecrement,
+} from "store";
 import { Confirmation } from "../../../components/Confirmation";
 import { Menu } from "../../../components/Menu";
 import { MenuItem } from "../../../components/MenuItem";
@@ -7,24 +16,13 @@ import { DeleteIcon } from "../../../components/icons/Delete";
 import { EditIcon } from "../../../components/icons/Edit";
 import { MinusIcon } from "../../../components/icons/Minus";
 import { PlusIcon } from "../../../components/icons/Plus";
-import { editTask } from "../../../store/slicies/task-editor";
-import {
-  decrementPomodoro,
-  deleteTask,
-  getTaskIndex,
-  incrementPomodoro,
-  selectCanDecrement,
-} from "../../../store/slicies/tasks-slice";
-import { RootState } from "../../../store/store";
 
 export function TaskMenu({ taskId }: { taskId: number }) {
   const dispatch = useDispatch();
   const canDecrement = useSelector((state: RootState) =>
     selectCanDecrement(state, taskId)
   );
-  const taskName = useSelector((state: RootState) => {
-    return state.tasks[getTaskIndex(state, taskId)].name;
-  });
+  const taskName = useSelector(currentTask).name;
   const [visible, setVisible] = useState(false);
   return (
     <>

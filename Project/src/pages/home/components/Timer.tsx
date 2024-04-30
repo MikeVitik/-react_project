@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
+import { getTimerValue } from "store";
 import { Button } from "../../../components/Button";
-import { getTimerValue } from "../../../store/slicies/timer-slice";
 
 export function Timer() {
   const { m, s } = useSelector(getTimerValue);

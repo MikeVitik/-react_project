@@ -37,15 +37,17 @@
     "prop-types": "^15.8.1",
     "storybook": "^8.0.2",
     "tailwindcss": "^3.4.1",
-    "webpack": "^5.91.0"
+    "webpack": "^5.91.0",
+    "@craco/craco": "~7.1.0",
+    "tsconfig-paths-webpack-plugin": "~4.1.0"
   },
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "start": "PORT=3500 react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "PORT=3500 craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject",
     "storybook": "storybook dev -p 6007",
     "build-storybook": "storybook build"
   },

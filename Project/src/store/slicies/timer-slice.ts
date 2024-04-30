@@ -1,35 +1,48 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { getTimeFractions } from "../utils/format-time";
-
+export interface Statistic {
+  startTime: Date;
+  duration: number;
+  isWork: boolean;
+}
 export interface Timer {
-  isRunning: boolean;
+  state: "created" | "running" | "pause" | "end";
   time: number;
   totalTime: number;
 }
+
 export const timerSlice = createSlice({
   name: "timer",
-  initialState: { isRunning: false, totalTime: 0, time: 0 } as Timer,
+  initialState: {
+    totalTime: 0,
+    time: 0,
+    state: "end",
+  } satisfies Timer as Timer,
   reducers: {
     create: (state, action: PayloadAction<number>) => {
-      return { isRunning: false, time: 0, totalTime: action.payload };
+      return {
+        isRunning: false,
+        time: 0,
+        totalTime: action.payload,
+        state: "created",
+      };
     },
-    toggle: (state) => {
-      return { ...state, isRunning: !state.isRunning };
-      // if (state.isRunning) {
-      //   return { ...state, isRunning: !state.isRunning };
-      // } else {
-      //   return { ...state, ...action.payload };
-      // }
+    start: (state) => {
+      state.state = "running";
+    },
+    stop: (state) => {
+      state.state = "pause";
     },
     updateTime: {
       prepare: (delta: number) => ({ payload: { delta } }),
       reducer: (state, action: PayloadAction<{ delta: number }>) => {
-        if (state.isRunning)
-          return {
-            ...state,
-            time: state.time + action.payload.delta,
-          };
-        else {
+        if (state.state === "running") {
+          const newTime = state.time + action.payload.delta;
+          if (newTime >= state.totalTime) {
+            state.state = "end";
+          }
+          state.time = newTime;
+        } else {
           return state;
         }
       },

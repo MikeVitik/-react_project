@@ -8,7 +8,7 @@ export function PomodoroIcon(props: { className?: string }) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clip-path="url(#clip0_25575_208)">
+      <g clipPath="url(#clip0_25575_208)">
         <path
           d="M38.9151 23.2834C38.9151 33.7058 30.466 40 20.0437 40C9.62098 40 1.17188 31.5509 1.17188 21.1282C1.17188 10.7059 9.88496 4.2981 20.3073 4.2981C30.73 4.2981 38.9151 12.8607 38.9151 23.2834Z"
           fill="#DC3E22"

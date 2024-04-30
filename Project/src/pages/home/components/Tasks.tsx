@@ -1,19 +1,19 @@
 import { addListener, isAnyOf } from "@reduxjs/toolkit";
 import { useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import {
+  RootState,
+  addTask,
+  cancelTaskEdit,
+  changeTask,
+  createTask,
+  editTask,
+  selectTotalTime,
+  updateEditTaskName,
+  useAppDispatch,
+} from "store";
 import { Button } from "../../../components/Button";
 import { TaskItem } from "../../../components/TaskItem";
-import {
-  cancelTaskEdit,
-  editTask,
-  updateEditTaskName,
-} from "../../../store/slicies/task-editor";
-import {
-  addTask,
-  changeTask,
-  selectTotalTime,
-} from "../../../store/slicies/tasks-slice";
-import { RootState } from "../../../store/store";
 import { TaskMenu } from "./TaskMenu";
 
 export function Tasks() {
@@ -28,7 +28,7 @@ export function Tasks() {
   const fullTime = useSelector(selectTotalTime);
   const taskNameRef = useRef<HTMLInputElement>(null);
   const isChangeDisabled = !editTaskName;
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   useEffect(() => {
     const unsubscribe = dispatch(
       addListener({
@@ -74,7 +74,7 @@ export function Tasks() {
           text="Добавить"
           variant="normal"
           disabled={isChangeDisabled}
-          onClick={() => dispatch(addTask(taskNameRef.current!.value))}
+          onClick={() => dispatch(createTask(taskNameRef.current!.value))}
         ></Button>
       )}
       <div className="pt-6 w-full">
