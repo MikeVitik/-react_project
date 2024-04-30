@@ -1,16 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { TIME_OF_ONE_POMODORO } from "./tasks-slice";
-
-// startTask: () => {
-//   //
-// },
-// pauseTask: () => {},
-// continueTask: () => {},
-// stopTask: () => {},
-// // ??? completeTask: () => {},
-// timerEnd: () => {},
-// pausePause: () => {},
-// continuePause: () => {},
+import { TIME_OF_ONE_POMODORO } from "../const";
 
 export interface CurrentTask {
   taskId?: number;

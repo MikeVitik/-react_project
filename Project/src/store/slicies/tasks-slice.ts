@@ -1,8 +1,8 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { TIME_OF_ONE_POMODORO, TOTAL_MILLISECONDS_IN_DAY } from "../const";
 import { formatTime } from "../utils/format-time";
 import { normalizeDay } from "../utils/normalize-day";
 
-export const TIME_OF_ONE_POMODORO = 25 * 60 * 1000;
 export interface SerialiazableTask {
   id: number;
   name: string;
@@ -123,32 +123,30 @@ export const tasksSlice = createSlice({
       filter: "currentWeek" | "pastWeek" | "twoWeeksAgo",
       currentDate = new Date()
     ) => {
-      const totalMilisecondInDay = 1000 * 60 * 60 * 24;
-
       const filterMap = {
         currentWeek: {
           startDate: (currentDate: Date) => {
             return (
               +currentDate -
-              normalizeDay(currentDate.getDate()) * totalMilisecondInDay
+              normalizeDay(currentDate.getDate()) * TOTAL_MILLISECONDS_IN_DAY
             );
           },
           endDate: (currentDate: Date) => {
             const daysToWeekend = 7 - normalizeDay(currentDate.getDay());
-            return +currentDate + daysToWeekend * totalMilisecondInDay;
+            return +currentDate + daysToWeekend * TOTAL_MILLISECONDS_IN_DAY;
           },
         },
         pastWeek: {
           startDate: (currentDate: Date) => {
             return (
               filterMap["currentWeek"].startDate(currentDate) -
-              7 * totalMilisecondInDay
+              7 * TOTAL_MILLISECONDS_IN_DAY
             );
           },
           endDate: (currentDate: Date) => {
             return (
               filterMap["currentWeek"].endDate(currentDate) -
-              7 * totalMilisecondInDay
+              7 * TOTAL_MILLISECONDS_IN_DAY
             );
           },
         },
@@ -156,13 +154,13 @@ export const tasksSlice = createSlice({
           startDate: (currentDate: Date) => {
             return (
               filterMap["currentWeek"].startDate(currentDate) -
-              14 * totalMilisecondInDay
+              14 * TOTAL_MILLISECONDS_IN_DAY
             );
           },
           endDate: (currentDate: Date) => {
             return (
               filterMap["currentWeek"].endDate(currentDate) -
-              14 * totalMilisecondInDay
+              14 * TOTAL_MILLISECONDS_IN_DAY
             );
           },
         },

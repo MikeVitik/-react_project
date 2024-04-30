@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { RootState, generateTasks } from "store";
 import { InfoCard } from "../../components/InfoCard";
 import { Chart } from "../../components/chart";
 import { PauseIcon } from "../../components/icons/Pause";
@@ -9,7 +10,6 @@ import {
   aggrigateTasks,
 } from "../../store/aggrigate-tasks";
 import { filterTasks } from "../../store/slicies/tasks-slice";
-import { RootState, generateTasks } from "../../store/store";
 import { PomodoroCount } from "./components/PomodoroCount";
 import { SelectedDay } from "./components/SelectedDay";
 

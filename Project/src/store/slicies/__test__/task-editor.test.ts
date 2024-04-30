@@ -1,5 +1,5 @@
-import { taskEditorSlice } from "../slicies/task-editor";
-import { addTask, changeTask } from "../slicies/tasks-slice";
+import { taskEditorSlice } from "../task-editor";
+import { addTask, changeTask } from "../tasks-slice";
 
 describe("TaskEditorSlice", () => {
   it("should reset taskName after task added", () => {

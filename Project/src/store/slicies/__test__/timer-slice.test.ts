@@ -1,4 +1,4 @@
-import { Timer, timerSlice } from "../slicies/timer-slice";
+import { Timer, timerSlice } from "../timer-slice";
 
 describe("TimerSlice", () => {
   it("should return initial state", () => {

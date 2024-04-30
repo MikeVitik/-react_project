@@ -1,5 +1,5 @@
-import { currentTaskSlice } from "../slicies/current-task";
-import { addTask } from "../slicies/tasks-slice";
+import { currentTaskSlice } from "../current-task";
+import { addTask } from "../tasks-slice";
 
 describe("current task slice", () => {
   it("should changed after new task added if it has inited", () => {

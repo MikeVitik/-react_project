@@ -2,11 +2,11 @@
 
 exports[`aggrigateTasks should return all week values for one the Monday task 1`] = `
 Object {
-  "completedPomodoro": 40000,
+  "completedPomodoro": 40,
   "day": 0,
   "pauseCount": 1,
-  "pauseTime": 17875,
-  "workTime": 145296,
+  "pauseTime": 17,
+  "workTime": 145.296,
 }
 `;
 
@@ -22,10 +22,10 @@ Object {
 
 exports[`aggrigateTasks should summarize same day value 1`] = `
 Object {
-  "completedPomodoro": 80000,
+  "completedPomodoro": 80,
   "day": 0,
   "pauseCount": 2,
-  "pauseTime": 35750,
-  "workTime": 290592,
+  "pauseTime": 34,
+  "workTime": 290.592,
 }
 `;

@@ -1,4 +1,5 @@
-import { configureAppStore, createTask, startTask, updateTime } from "../store";
+import { createTask, startTask } from "../actions/task-actions";
+import { configureAppStore, updateTime } from "../store";
 
 describe("createTask", () => {
   it("check initial state", () => {

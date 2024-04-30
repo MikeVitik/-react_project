@@ -7,7 +7,7 @@ import {
   incrementPomodoro,
   selectCanDecrement,
   tasksSlice,
-} from "../slicies/tasks-slice";
+} from "../tasks-slice";
 
 describe("TasksSlice", () => {
   beforeAll(() => {
