@@ -15,10 +15,13 @@ let prevTime = Date.now();
 setInterval(() => {
   const delta = Date.now() - prevTime;
   prevTime = Date.now();
-  if (store.getState().timer.state === "running") {
+  if (
+    store.getState().timer.state === "running" ||
+    store.getState().timer.state === "pause"
+  ) {
     store.dispatch(updateTime(delta));
   }
-}, 50);
+}, 500);
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

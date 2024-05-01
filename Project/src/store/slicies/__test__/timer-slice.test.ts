@@ -5,6 +5,7 @@ describe("TimerSlice", () => {
     expect(timerSlice.reducer(undefined, { type: "" })).toEqual({
       state: "end",
       time: 0,
+      currentTime: 0,
       totalTime: 0,
     });
   });
@@ -23,11 +24,23 @@ describe("TimerSlice", () => {
     });
   });
   it("should update time for running timer", () => {
-    const prevState = { state: "running", time: 0 } as Timer;
+    const prevState = { state: "running", time: 0, currentTime: 0 } as Timer;
     expect(
       timerSlice.reducer(prevState, timerSlice.actions.updateTime(50))
     ).toEqual({
       state: "running",
+      currentTime: 50,
+      time: 50,
+    });
+  });
+  it("should reset currentTime then pause", () => {
+    let prevState = { state: "running", time: 50, currentTime: 50 } as Timer;
+    prevState = timerSlice.reducer(prevState, timerSlice.actions.stop());
+    expect(
+      timerSlice.reducer(prevState, timerSlice.actions.updateTime(30))
+    ).toEqual({
+      state: "pause",
+      currentTime: 30,
       time: 50,
     });
   });
@@ -38,11 +51,12 @@ describe("TimerSlice", () => {
     ).toEqual("end");
   });
   it("should not update time for running timer", () => {
-    const prevState = { state: "created", time: 0 } as Timer;
+    const prevState = { state: "created", time: 0, currentTime: 0 } as Timer;
     expect(
       timerSlice.reducer(prevState, timerSlice.actions.updateTime(50))
     ).toEqual({
       state: "created",
+      currentTime: 0,
       time: 0,
     });
   });

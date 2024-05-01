@@ -21,6 +21,7 @@ export interface CurrentTask {
     | "startBreak"
     | "pauseBreak"
     | "continueBreak";
+  hasPause?: boolean;
   primaryDisabled?: boolean;
   secondaryAction?: "stopTask" | "completeTask" | "skipBreak";
   secondaryDisabled?: boolean;
@@ -35,6 +36,7 @@ export const currentTaskSlice = createSlice({
     secondaryDisabled: true,
     primaryAction: "startTask",
     secondaryAction: "stopTask",
+    hasPause: false,
   } satisfies CurrentTask as CurrentTask,
   reducers: {
     initTask: (state, action: { payload: number | undefined }) => {
@@ -64,6 +66,7 @@ export const currentTaskSlice = createSlice({
       state.primaryDisabled = false;
       state.secondaryDisabled = false;
       state.primaryAction = "continueTask";
+      state.hasPause = true;
       // state.secondaryAction = action.payload ? "stopTask" : "completeTask";
     },
     stopTask: (state) => {

@@ -1,23 +1,11 @@
 import {
   configureStore,
-  createAsyncThunk,
   createListenerMiddleware,
   isAnyOf,
 } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { rootReducer } from "./reducers";
 import { addTask } from "./slicies/tasks-slice";
-import { timerSlice } from "./slicies/timer-slice";
-export const updateTime = createAsyncThunk<void, number, { state: RootState }>(
-  "updateTimer",
-  (delta: number, thunkAPI) => {
-    thunkAPI.dispatch(timerSlice.actions.updateTime(delta));
-    if (timerSlice.selectSlice(thunkAPI.getState()).state === "end") {
-      // thunkAPI.dispatch(timerEnd)
-    }
-  }
-);
-
 export function configureAppStore(preloadedState = {}) {
   const listenerMiddleware = createListenerMiddleware();
   listenerMiddleware.startListening({

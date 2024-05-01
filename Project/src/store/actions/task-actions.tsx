@@ -2,9 +2,29 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { BREAK_TIME, TASK_TIME } from "../const";
 import { currentTask } from "../selectors/current-task-selector";
 import { currentTaskSlice } from "../slicies/current-task";
+import { StatisticItem, statisticInfo } from "../slicies/statistic";
 import { addTask } from "../slicies/tasks-slice";
 import { timerSlice } from "../slicies/timer-slice";
 import { RootState } from "../store";
+
+export const statisticInfoPayload = (
+  state: RootState
+): Omit<StatisticItem, "startDateString"> => {
+  const { taskId, hasPause, state: currentTaskState } = state.currentTask;
+  const { currentTime, state: timerState } = state.timer;
+  const type = timerState !== "pause" ? "work" : "pause";
+  const name = timerState !== "pause" ? "workTime" : "pauseTime";
+  const completedPomodoro =
+    currentTaskState === "break" && type === "work" && hasPause !== true
+      ? 1
+      : undefined;
+  return {
+    taskId: taskId!,
+    type,
+    completedPomodoro,
+    [name]: currentTime,
+  } satisfies Omit<StatisticItem, "startDateString">;
+};
 
 export const createTask = createAsyncThunk<void, string, { state: RootState }>(
   "createTask",
@@ -20,7 +40,7 @@ export const createTask = createAsyncThunk<void, string, { state: RootState }>(
 
 export const startTask = createAsyncThunk<void, void, { state: RootState }>(
   "startTask",
-  (_, { dispatch }) => {
+  (_, { dispatch, getState }) => {
     dispatch(currentTaskSlice.actions.startTask());
     dispatch(timerSlice.actions.start());
   }
@@ -28,21 +48,16 @@ export const startTask = createAsyncThunk<void, void, { state: RootState }>(
 
 export const pauseTask = createAsyncThunk<void, void, { state: RootState }>(
   "pauseTask",
-  (_, { dispatch }) => {
+  (_, { dispatch, getState }) => {
+    dispatch(statisticInfo.actions.add(statisticInfoPayload(getState())));
     dispatch(currentTaskSlice.actions.pauseTask());
-    dispatch(timerSlice.actions.stop());
-  }
-);
-export const stopTask = createAsyncThunk<void, void, { state: RootState }>(
-  "stopTask",
-  (_, { dispatch }) => {
-    dispatch(currentTaskSlice.actions.stopTask());
     dispatch(timerSlice.actions.stop());
   }
 );
 export const continueTask = createAsyncThunk<void, void, { state: RootState }>(
   "continueTask",
-  (_, { dispatch }) => {
+  (_, { dispatch, getState }) => {
+    dispatch(statisticInfo.actions.add(statisticInfoPayload(getState())));
     dispatch(currentTaskSlice.actions.continueTask());
     dispatch(timerSlice.actions.start());
   }
@@ -52,6 +67,7 @@ export const startBreak = createAsyncThunk<void, void, { state: RootState }>(
   "startBreak",
   (_, { dispatch, getState }) => {
     dispatch(currentTaskSlice.actions.startBreak());
+    dispatch(statisticInfo.actions.add(statisticInfoPayload(getState())));
     dispatch(timerSlice.actions.create(BREAK_TIME));
   }
 );

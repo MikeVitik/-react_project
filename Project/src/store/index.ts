@@ -9,7 +9,7 @@ export type { CurrentTask } from "./slicies/current-task";
 
 export const { getMode } = currentTaskSlice.selectors;
 
-export { configureAppStore, updateTime, useAppDispatch } from "./store";
+export { configureAppStore, useAppDispatch } from "./store";
 
 export { currentTask } from "./selectors/current-task-selector";
 export { taskActions } from "./selectors/task-actions-selector";
@@ -24,6 +24,7 @@ export const {
 } = tasksSlice.actions;
 
 export { createTask } from "./actions/task-actions";
+export { updateTime } from "./actions/update-time";
 export const { selectCanDecrement, selectTotalTime } = tasksSlice.selectors;
 
 export const { cancelTaskEdit, editTask, updateEditTaskName } =
