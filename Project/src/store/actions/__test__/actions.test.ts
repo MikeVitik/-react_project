@@ -169,7 +169,7 @@ describe("taskActions", () => {
       expect(store.getState().statisticInfo[0]).toEqual({
         startDateString: expect.any(String),
         taskId: 0,
-        completedPomodoro: 1,
+        completedPomodoro: 1000,
         type: "work",
         workTime: 1000,
       });

@@ -5,8 +5,6 @@ import { TaskHeader } from "./components/TaskHeader";
 import { Tasks } from "./components/Tasks";
 import { Timer } from "./components/Timer";
 
-type Modes = "prepare" | "work" | "pause";
-
 export function Home() {
   return (
     <>

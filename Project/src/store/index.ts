@@ -9,6 +9,9 @@ export type { CurrentTask } from "./slicies/current-task";
 
 export const { getMode } = currentTaskSlice.selectors;
 
+export { aggrigateStatistic, filterStatistic } from "./slicies/statistic";
+export type { FilterType, StatisticValues } from "./slicies/statistic";
+
 export { configureAppStore, useAppDispatch } from "./store";
 
 export { currentTask } from "./selectors/current-task-selector";
@@ -31,4 +34,4 @@ export const { cancelTaskEdit, editTask, updateEditTaskName } =
   taskEditorSlice.actions;
 export const { getTimerValue } = timerSlice.selectors;
 
-export { generateTasks } from "./utils/tasks-generator";
+export { generateStatistics } from "./utils/statistic-generator";

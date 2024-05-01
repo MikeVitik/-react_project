@@ -1,18 +1,12 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { TIME_OF_ONE_POMODORO, TOTAL_MILLISECONDS_IN_DAY } from "../const";
+import { TIME_OF_ONE_POMODORO } from "../const";
 import { formatTime } from "../utils/format-time";
-import { normalizeDay } from "../utils/normalize-day";
 
 export interface SerialiazableTask {
   id: number;
   name: string;
-  startDateString: string;
   isCompleted: boolean;
   pomodoroCount: number;
-  completedPomodoro?: number;
-  workTime?: number;
-  pauseCount?: number;
-  pauseTime?: number;
 }
 export interface Task extends SerialiazableTask {
   startDate: Date;
@@ -118,68 +112,6 @@ export const tasksSlice = createSlice({
       );
       return formatTime(allTime);
     },
-    filterTasks: (
-      sliceState,
-      filter: "currentWeek" | "pastWeek" | "twoWeeksAgo",
-      currentDate = new Date()
-    ) => {
-      const filterMap = {
-        currentWeek: {
-          startDate: (currentDate: Date) => {
-            return (
-              +currentDate -
-              normalizeDay(currentDate.getDate()) * TOTAL_MILLISECONDS_IN_DAY
-            );
-          },
-          endDate: (currentDate: Date) => {
-            const daysToWeekend = 7 - normalizeDay(currentDate.getDay());
-            return +currentDate + daysToWeekend * TOTAL_MILLISECONDS_IN_DAY;
-          },
-        },
-        pastWeek: {
-          startDate: (currentDate: Date) => {
-            return (
-              filterMap["currentWeek"].startDate(currentDate) -
-              7 * TOTAL_MILLISECONDS_IN_DAY
-            );
-          },
-          endDate: (currentDate: Date) => {
-            return (
-              filterMap["currentWeek"].endDate(currentDate) -
-              7 * TOTAL_MILLISECONDS_IN_DAY
-            );
-          },
-        },
-        twoWeeksAgo: {
-          startDate: (currentDate: Date) => {
-            return (
-              filterMap["currentWeek"].startDate(currentDate) -
-              14 * TOTAL_MILLISECONDS_IN_DAY
-            );
-          },
-          endDate: (currentDate: Date) => {
-            return (
-              filterMap["currentWeek"].endDate(currentDate) -
-              14 * TOTAL_MILLISECONDS_IN_DAY
-            );
-          },
-        },
-      };
-
-      const startDate = new Date(filterMap[filter].startDate(currentDate));
-      const endDate = new Date(filterMap[filter].endDate(currentDate));
-      return sliceState
-        .map(
-          (t): Task => ({
-            ...t,
-            startDate: (t as Task).startDate || new Date(t.startDateString),
-          })
-        )
-        .filter(
-          (t) =>
-            t.isCompleted && t.startDate >= startDate && t.startDate < endDate
-        );
-    },
   },
 });
 
@@ -190,10 +122,5 @@ export const {
   incrementPomodoro,
   decrementPomodoro,
 } = tasksSlice.actions;
-export const {
-  selectCanDecrement,
-  selectTotalTime,
-  getTaskIndex,
-  getTask,
-  filterTasks,
-} = tasksSlice.selectors;
+export const { selectCanDecrement, selectTotalTime, getTaskIndex, getTask } =
+  tasksSlice.selectors;

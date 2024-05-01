@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`normilaze-day 1`] = `
+Array [
+  6,
+  0,
+  1,
+  2,
+  3,
+  4,
+]
+`;

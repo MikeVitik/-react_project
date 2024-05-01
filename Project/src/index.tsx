@@ -2,13 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
-import { configureAppStore, generateTasks, updateTime } from "store";
+import { configureAppStore, generateStatistics, updateTime } from "store";
 import App from "./App";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 
 const store = configureAppStore({
-  tasks: generateTasks(),
+  statisticInfo: generateStatistics(),
 });
 
 let prevTime = Date.now();

@@ -1,22 +1,25 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState, generateTasks } from "store";
+import {
+  FilterType,
+  RootState,
+  StatisticValues,
+  aggrigateStatistic,
+  filterStatistic,
+  generateStatistics,
+} from "store";
 import { InfoCard } from "../../components/InfoCard";
 import { Chart } from "../../components/chart";
 import { PauseIcon } from "../../components/icons/Pause";
-import {
-  FilterType,
-  StatisticValues,
-  aggrigateTasks,
-} from "../../store/aggrigate-tasks";
-import { filterTasks } from "../../store/slicies/tasks-slice";
 import { PomodoroCount } from "./components/PomodoroCount";
 import { SelectedDay } from "./components/SelectedDay";
 
 export function StatisticConnect() {
   const [filter, setFilter] = useState<FilterType>("currentWeek");
-  const tasks = useSelector((state: RootState) => filterTasks(state, filter));
-  const values = aggrigateTasks(tasks);
+  const items = useSelector((state: RootState) =>
+    filterStatistic(state, filter)
+  );
+  const values = aggrigateStatistic(items);
   return (
     <Statistic
       filter={filter}
@@ -26,10 +29,12 @@ export function StatisticConnect() {
   );
 }
 
-const tasks = generateTasks();
+const items = generateStatistics();
 
-const defaultValues = aggrigateTasks(filterTasks({ tasks }, "currentWeek"));
-console.log(tasks, defaultValues, 1);
+const defaultValues = aggrigateStatistic(
+  filterStatistic({ statisticInfo: items }, "currentWeek")
+);
+console.log(items, defaultValues, 1);
 export function Statistic({
   filter = "currentWeek",
   onFilterChange,
@@ -42,6 +47,7 @@ export function Statistic({
   const [selectedDay, onSelectDayChanged] = useState(0);
   const { workTime, completedPomodoro, pauseCount, pauseTime } =
     values[selectedDay] || {};
+  const focusValue = Math.floor((completedPomodoro / workTime) * 100);
   return (
     <>
       <div className="flex justify-between pb-4">
@@ -76,7 +82,7 @@ export function Statistic({
           <InfoCard
             type={workTime === 0 ? "inactive" : "focus"}
             text="Фокус"
-            data={Math.floor((completedPomodoro / workTime) * 100) + "%"}
+            data={focusValue + "%"}
             icon={PauseIcon}
           ></InfoCard>
         </div>
@@ -84,7 +90,7 @@ export function Statistic({
           <InfoCard
             type={workTime === 0 ? "inactive" : "pause"}
             text="Время на паузе"
-            data={pauseTime + "м"}
+            data={Math.floor(pauseTime) + "м"}
             icon={PauseIcon}
           ></InfoCard>
         </div>
