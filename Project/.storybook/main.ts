@@ -1,4 +1,5 @@
 import type { StorybookConfig } from "@storybook/react-webpack5";
+import TsconfigPathsPlugin from "tsconfig-paths-webpack-plugin";
 
 const config: StorybookConfig = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
@@ -10,6 +11,10 @@ const config: StorybookConfig = {
     "@chromatic-com/storybook",
     "@storybook/addon-interactions",
   ],
+  webpackFinal: async (config, { configType }) => {
+    config.resolve!.plugins = [new TsconfigPathsPlugin()];
+    return config;
+  },
   framework: {
     name: "@storybook/react-webpack5",
     options: {},
