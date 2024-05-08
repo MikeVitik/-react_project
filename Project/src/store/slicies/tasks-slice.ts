@@ -1,5 +1,4 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { TIME_OF_ONE_POMODORO } from "../const";
 import { formatTime } from "../utils/format-time";
 
 export interface SerialiazableTask {
@@ -16,6 +15,7 @@ let lastTaskId = 0;
 const taskIdPrepare = (taskId: number) => {
   return { payload: { taskId } };
 };
+
 export const tasksSlice = createSlice({
   name: "tasks",
   initialState: [] as SerialiazableTask[],
@@ -58,6 +58,18 @@ export const tasksSlice = createSlice({
       ) => {
         const task = tasksSlice.getSelectors().getTask(state, taskId);
         task.name = text;
+      },
+    },
+    completeTask: {
+      prepare: (taskId: number) => {
+        return { payload: { taskId } };
+      },
+      reducer: (
+        state,
+        { payload: { taskId } }: PayloadAction<{ taskId: number }>
+      ) => {
+        const task = tasksSlice.getSelectors().getTask(state, taskId);
+        task.isCompleted = true;
       },
     },
     incrementPomodoro: {
@@ -103,14 +115,20 @@ export const tasksSlice = createSlice({
         tasksSlice.getSelectors().getTask(sliceState, taskId).pomodoroCount > 1
       );
     },
+    selectUncompleted: (sliceState) => {
+      return sliceState.filter(({ isCompleted }) => !isCompleted);
+    },
     selectTotalTime: (sliceState) => {
-      const allTime = new Date(
-        sliceState.reduce(
-          (acc, { pomodoroCount: pomodoro_count }) => acc + pomodoro_count,
-          0
-        ) * TIME_OF_ONE_POMODORO
+      const tasks = tasksSlice.getSelectors().selectUncompleted(sliceState);
+      const totalTime: number = tasks.reduce(
+        (acc, { pomodoroCount: pomodoro_count }) => acc + pomodoro_count,
+        0
       );
-      return formatTime(allTime);
+
+      return formatTime(new Date(totalTime));
+    },
+    getNextTask: (sliceState) => {
+      return sliceState.find(({ isCompleted }) => !isCompleted);
     },
   },
 });
@@ -122,5 +140,11 @@ export const {
   incrementPomodoro,
   decrementPomodoro,
 } = tasksSlice.actions;
-export const { selectCanDecrement, selectTotalTime, getTaskIndex, getTask } =
-  tasksSlice.selectors;
+export const {
+  selectCanDecrement,
+  selectTotalTime,
+  getTaskIndex,
+  getTask,
+  getNextTask,
+  selectUncompleted,
+} = tasksSlice.selectors;

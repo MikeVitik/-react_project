@@ -3,7 +3,7 @@ import { BREAK_TIME, TASK_TIME } from "../const";
 import { currentTask } from "../selectors/current-task-selector";
 import { currentTaskSlice } from "../slicies/current-task";
 import { statisticInfo } from "../slicies/statistic";
-import { addTask } from "../slicies/tasks-slice";
+import { addTask, getNextTask, tasksSlice } from "../slicies/tasks-slice";
 import { timerSlice } from "../slicies/timer-slice";
 import { RootState } from "../store";
 
@@ -47,6 +47,13 @@ export const continueTask = createAsyncThunk<void, void, { state: RootState }>(
     dispatch(timerSlice.actions.start());
   }
 );
+export const stopTaskWork = createAsyncThunk<void, void, { state: RootState }>(
+  "stopTaskWork",
+  (_, { dispatch, getState }) => {
+    dispatch(timerSlice.actions.stop());
+    dispatch(currentTaskSlice.actions.stopTaskWork());
+  }
+);
 
 export const startBreak = createAsyncThunk<void, void, { state: RootState }>(
   "startBreak",
@@ -73,18 +80,32 @@ export const continueBreak = createAsyncThunk<void, void, { state: RootState }>(
     dispatch(timerSlice.actions.start());
   }
 );
-export const nextOrContinueTask = createAsyncThunk<
-  void,
-  void,
-  { state: RootState }
->("nextOrContinueTask", (_, { dispatch, getState }) => {
-  dispatch(currentTaskSlice.actions.nextOrContinueTask());
-});
+export const nextTask = createAsyncThunk<void, void, { state: RootState }>(
+  "nextTask",
+  (_, { dispatch, getState }) => {
+    dispatch(currentTaskSlice.actions.nextTaskOrInited());
+    dispatch(
+      timerSlice.actions.create(
+        currentTaskSlice.selectSlice(getState()).state === "workInited"
+          ? TASK_TIME
+          : 0
+      )
+    );
+  }
+);
 export const completeTask = createAsyncThunk<void, void, { state: RootState }>(
   "completeTask",
   (_, { dispatch, getState }) => {
-    // dispatch(task ) getState()
-    dispatch(currentTaskSlice.actions.pauseBreak());
-    // dispatch(timerSlice.actions.stop());
+    dispatch(
+      tasksSlice.actions.completeTask(
+        currentTaskSlice.selectSlice(getState()).taskId!
+      )
+    );
+    const nextTask = getNextTask(getState());
+    console.log(nextTask);
+    dispatch(
+      currentTaskSlice.actions.completeTask(nextTask ? nextTask.id : undefined)
+    );
+    dispatch(timerSlice.actions.create(BREAK_TIME));
   }
 );

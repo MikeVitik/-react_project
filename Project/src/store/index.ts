@@ -25,6 +25,7 @@ export const {
   changeTask,
   addTask,
 } = tasksSlice.actions;
+export const { selectUncompleted } = tasksSlice.selectors;
 
 export { createTask } from "./actions/task-actions";
 export { updateTime } from "./actions/update-time";

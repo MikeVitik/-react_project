@@ -21,9 +21,5 @@ describe("current task slice", () => {
       currentTaskSlice.actions.startTask()
     );
     expect(state.state).toBe("workTimer");
-    expect(!!state.secondaryDisabled).toBe(true);
-    expect(!!state.primaryDisabled).toBe(false);
-    expect(state.primaryAction).toBe("pauseTask");
-    expect(state.secondaryAction).toBe("stopTask");
   });
 });

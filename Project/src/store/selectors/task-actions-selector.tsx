@@ -3,11 +3,12 @@ import {
   completeTask,
   continueBreak,
   continueTask,
-  nextOrContinueTask,
+  nextTask,
   pauseBreak,
   pauseTask,
   startBreak,
   startTask,
+  stopTaskWork,
 } from "../actions/task-actions";
 import { CurrentTask } from "../slicies/current-task";
 import { RootState } from "../store";
@@ -36,7 +37,7 @@ const mapStateToPrimaryAction: {
   break: continueBreak,
   breakTimer: pauseBreak,
   breakStop: continueBreak,
-  workStop: pauseTask,
+  workStop: startBreak,
 };
 const mapStateToSecondaryName: {
   [key in CurrentTask["state"]]: string;
@@ -55,11 +56,11 @@ const mapStateToSecondaryAction: {
 } = {
   inited: undefined,
   workInited: undefined,
-  workTimer: startBreak,
-  workPause: startBreak,
-  break: nextOrContinueTask,
-  breakTimer: nextOrContinueTask,
-  breakStop: nextOrContinueTask,
+  workTimer: stopTaskWork,
+  workPause: stopTaskWork,
+  break: nextTask,
+  breakTimer: nextTask,
+  breakStop: nextTask,
   workStop: completeTask,
 };
 

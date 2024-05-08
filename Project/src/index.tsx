@@ -15,10 +15,7 @@ let prevTime = Date.now();
 setInterval(() => {
   const delta = Date.now() - prevTime;
   prevTime = Date.now();
-  if (
-    store.getState().timer.state === "running" ||
-    store.getState().timer.state === "pause"
-  ) {
+  if (store.getState().timer.state === "running") {
     store.dispatch(updateTime(delta));
   }
 }, 500);

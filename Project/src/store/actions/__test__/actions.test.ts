@@ -1,9 +1,12 @@
+import { TASK_TIME } from "../../const";
 import { CurrentTask } from "../../slicies/current-task";
 import { Timer, timerSlice } from "../../slicies/timer-slice";
 import { configureAppStore } from "../../store";
 import {
+  completeTask,
   continueTask,
   createTask,
+  nextTask,
   pauseTask,
   startBreak,
   startTask,
@@ -15,10 +18,6 @@ describe("taskActions", () => {
     it("check initial state", () => {
       const store = configureAppStore({});
       expect(store.getState().currentTask.state).toBe("inited");
-      expect(store.getState().currentTask.primaryDisabled).toBe(true);
-      expect(store.getState().currentTask.primaryAction).toBe("startTask");
-      expect(store.getState().currentTask.secondaryDisabled).toBe(true);
-      expect(store.getState().currentTask.secondaryAction).toBe("stopTask");
     });
     it("should add task, setCurrent task and timer", () => {
       const store = configureAppStore({});
@@ -54,7 +53,7 @@ describe("taskActions", () => {
       store.dispatch(startTask());
 
       expect(store.getState().currentTask.state).toBe("workTimer");
-      expect(store.getState().currentTask.primaryAction).toBe("pauseTask");
+      //      expect(store.getState().currentTask.primaryAction).toBe("pauseTask");
       expect(store.getState().timer.state).toBe("running");
     });
   });
@@ -177,9 +176,69 @@ describe("taskActions", () => {
   });
 
   describe("completeTask", () => {
-    it("should mark task completed", () => {});
-    it("should increment completed_pomodoro", () => {});
-    it("should move to initedTask state if has task", () => {});
-    it("should move to inited state if has not task", () => {});
+    const initialState = {
+      currentTask: {
+        taskId: 0,
+        state: "workStop",
+      } satisfies CurrentTask,
+      timer: { time: 1000, currentTime: 1000, state: "end", totalTime: 1000 },
+      tasks: [{ id: 0, name: "New Task" }],
+    };
+    it("should mark task completed", () => {
+      const store = configureAppStore(initialState);
+      store.dispatch(completeTask());
+      expect(store.getState().currentTask.state).toBe("break");
+      expect(store.getState().timer.state).toEqual("created");
+      expect(store.getState().tasks[0].isCompleted).toBe(true);
+    });
+    it("should set current task taskId to undefined if no task", () => {
+      const store = configureAppStore(initialState);
+      store.dispatch(completeTask());
+      expect(store.getState().currentTask.taskId).toBeUndefined();
+    });
+    it("should set current task next taskId", () => {
+      const store = configureAppStore({
+        ...initialState,
+        tasks: [
+          { id: 0, name: "New Task" },
+          { id: 1, name: "New Task 1" },
+        ],
+      });
+      store.dispatch(completeTask());
+      expect(store.getState().currentTask.taskId).toBe(1);
+    });
+  });
+
+  describe("nextOrContinueTask", () => {
+    const initialState = {
+      currentTask: {
+        taskId: 0,
+        state: "workStop",
+      } satisfies CurrentTask,
+      timer: { time: 1000, currentTime: 1000, state: "end", totalTime: 1000 },
+      tasks: [{ id: 0, name: "New Task" }],
+    };
+    it("should move to work inited task state and set timer to TASK_TIME", () => {
+      const store = configureAppStore(initialState);
+      store.dispatch(nextTask());
+      expect(store.getState().currentTask.state).toBe("workInited");
+      expect(store.getState().timer.state).toEqual("created");
+      expect(store.getState().timer.totalTime).toEqual(TASK_TIME);
+      expect(store.getState().tasks[0].isCompleted).toBeUndefined();
+    });
+    it("should move to inited task state and set timer to 0", () => {
+      const store = configureAppStore({
+        ...initialState,
+        currentTask: {
+          taskId: undefined,
+          state: "workStop",
+        } satisfies CurrentTask,
+      });
+      store.dispatch(nextTask());
+      expect(store.getState().currentTask.state).toBe("inited");
+      expect(store.getState().timer.state).toEqual("created");
+      expect(store.getState().timer.totalTime).toEqual(0);
+      expect(store.getState().tasks[0].isCompleted).toBeUndefined();
+    });
   });
 });

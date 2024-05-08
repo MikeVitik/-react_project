@@ -9,6 +9,7 @@ import {
   createTask,
   editTask,
   selectTotalTime,
+  selectUncompleted,
   updateEditTaskName,
   useAppDispatch,
 } from "store";
@@ -22,9 +23,10 @@ export function Tasks() {
       return state.taskEditor;
     }
   );
-  const tasks = useSelector((state: RootState) => {
-    return state.tasks;
-  });
+  const tasks = useSelector(selectUncompleted);
+  // (state: RootState) => {
+  //   return state.tasks;
+  // });
   const fullTime = useSelector(selectTotalTime);
   const taskNameRef = useRef<HTMLInputElement>(null);
   const isChangeDisabled = !editTaskName;
