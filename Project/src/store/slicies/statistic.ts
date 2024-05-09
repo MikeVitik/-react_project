@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { ONE_MINUTES, TOTAL_MILLISECONDS_IN_DAY } from "../const";
 import { normalizeDay } from "../utils/normalize-day";
 import { CurrentTask } from "./current-task";
@@ -11,7 +11,6 @@ export interface StatisticValues {
   pauseCount: number;
   pauseTime: number;
 }
-
 export interface StatisticItem {
   taskId: number;
   type: "work" | "pause";
@@ -20,101 +19,65 @@ export interface StatisticItem {
   workTime?: number;
   pauseTime?: number;
 }
+export type FilterType = "currentWeek" | "pastWeek" | "twoWeeksAgo";
 
-export const statisticInfo = createSlice({
-  name: "statisticInfo",
-  initialState: [] as StatisticItem[],
-  reducers: {
-    add: {
-      prepare: (
-        {
-          taskId,
-          hasPause,
-          state: currentTaskState,
-        }: Pick<CurrentTask, "taskId" | "hasPause" | "state">,
-        { currentTime, state: timerState }: Pick<Timer, "state" | "currentTime">
-      ) => {
-        const type = timerState !== "pause" ? "work" : "pause";
-        const name = timerState !== "pause" ? "workTime" : "pauseTime";
-        const completedPomodoro =
-          currentTaskState === "break" && type === "work" && hasPause !== true
-            ? currentTime
-            : undefined;
-        return {
-          payload: {
-            taskId: taskId!,
-            type,
-            completedPomodoro,
-            startDateString: new Date().toUTCString(),
-            [name]: currentTime,
-          } satisfies StatisticItem,
-        };
+export const filterStatisticInfo = (
+  sliceState: StatisticItem[],
+  filter: "currentWeek" | "pastWeek" | "twoWeeksAgo",
+  currentDate = new Date(new Date().toDateString())
+): StatisticItem[] => {
+  const filterMap = {
+    currentWeek: {
+      startDate: (currentDate: Date) => {
+        return (
+          +currentDate -
+          normalizeDay(currentDate.getDay()) * TOTAL_MILLISECONDS_IN_DAY
+        );
       },
-      reducer: (state, action: PayloadAction<StatisticItem>) => {
-        state.push(action.payload);
+      endDate: (currentDate: Date) => {
+        const daysToWeekend = 7 - normalizeDay(currentDate.getDay());
+        return +currentDate + daysToWeekend * TOTAL_MILLISECONDS_IN_DAY;
       },
     },
-  },
-  selectors: {
-    filter: (
-      sliceState,
-      filter: "currentWeek" | "pastWeek" | "twoWeeksAgo",
-      currentDate = new Date(new Date().toDateString())
-    ): StatisticItem[] => {
-      const filterMap = {
-        currentWeek: {
-          startDate: (currentDate: Date) => {
-            return (
-              +currentDate -
-              normalizeDay(currentDate.getDay()) * TOTAL_MILLISECONDS_IN_DAY
-            );
-          },
-          endDate: (currentDate: Date) => {
-            const daysToWeekend = 7 - normalizeDay(currentDate.getDay());
-            return +currentDate + daysToWeekend * TOTAL_MILLISECONDS_IN_DAY;
-          },
-        },
-        pastWeek: {
-          startDate: (currentDate: Date) => {
-            return (
-              filterMap["currentWeek"].startDate(currentDate) -
-              7 * TOTAL_MILLISECONDS_IN_DAY
-            );
-          },
-          endDate: (currentDate: Date) => {
-            return (
-              filterMap["currentWeek"].endDate(currentDate) -
-              7 * TOTAL_MILLISECONDS_IN_DAY
-            );
-          },
-        },
-        twoWeeksAgo: {
-          startDate: (currentDate: Date) => {
-            return (
-              filterMap["currentWeek"].startDate(currentDate) -
-              14 * TOTAL_MILLISECONDS_IN_DAY
-            );
-          },
-          endDate: (currentDate: Date) => {
-            return (
-              filterMap["currentWeek"].endDate(currentDate) -
-              14 * TOTAL_MILLISECONDS_IN_DAY
-            );
-          },
-        },
-      };
-
-      const startDate = new Date(filterMap[filter].startDate(currentDate));
-      const endDate = new Date(filterMap[filter].endDate(currentDate));
-      return sliceState
-        .map((item) => ({
-          ...item,
-          startDate: (item as any).startDate || new Date(item.startDateString),
-        }))
-        .filter((t) => t.startDate >= startDate && t.startDate < endDate);
+    pastWeek: {
+      startDate: (currentDate: Date) => {
+        return (
+          filterMap["currentWeek"].startDate(currentDate) -
+          7 * TOTAL_MILLISECONDS_IN_DAY
+        );
+      },
+      endDate: (currentDate: Date) => {
+        return (
+          filterMap["currentWeek"].endDate(currentDate) -
+          7 * TOTAL_MILLISECONDS_IN_DAY
+        );
+      },
     },
-  },
-});
+    twoWeeksAgo: {
+      startDate: (currentDate: Date) => {
+        return (
+          filterMap["currentWeek"].startDate(currentDate) -
+          14 * TOTAL_MILLISECONDS_IN_DAY
+        );
+      },
+      endDate: (currentDate: Date) => {
+        return (
+          filterMap["currentWeek"].endDate(currentDate) -
+          14 * TOTAL_MILLISECONDS_IN_DAY
+        );
+      },
+    },
+  };
+
+  const startDate = new Date(filterMap[filter].startDate(currentDate));
+  const endDate = new Date(filterMap[filter].endDate(currentDate));
+  return sliceState
+    .map((item) => ({
+      ...item,
+      startDate: (item as any).startDate || new Date(item.startDateString),
+    }))
+    .filter((t) => t.startDate >= startDate && t.startDate < endDate);
+};
 
 export const aggrigateStatistic = (
   items: StatisticItem[]
@@ -169,5 +132,45 @@ export const aggrigateStatistic = (
   return result;
 };
 
-export type FilterType = Parameters<typeof statisticInfo.selectors.filter>[1];
+export const statisticInfo = createSlice({
+  name: "statisticInfo",
+  initialState: [] as StatisticItem[],
+  reducers: {
+    add: {
+      prepare: (
+        {
+          taskId,
+          hasPause,
+          state: currentTaskState,
+        }: Pick<CurrentTask, "taskId" | "hasPause" | "state">,
+        { currentTime, state: timerState }: Pick<Timer, "state" | "currentTime">
+      ) => {
+        const type = timerState !== "pause" ? "work" : "pause";
+        const name = timerState !== "pause" ? "workTime" : "pauseTime";
+        const completedPomodoro =
+          currentTaskState === "break" && type === "work" && hasPause !== true
+            ? currentTime
+            : undefined;
+        return {
+          payload: {
+            taskId: taskId!,
+            type,
+            completedPomodoro,
+            startDateString: new Date().toUTCString(),
+            [name]: currentTime,
+          } satisfies StatisticItem,
+        };
+      },
+      reducer: (state, action: PayloadAction<StatisticItem>) => {
+        state.push(action.payload);
+      },
+    },
+  },
+  selectors: {
+    filter: createSelector(
+      [(sliceState) => sliceState, (sliceState, filter: FilterType) => filter],
+      filterStatisticInfo
+    ),
+  },
+});
 export const { filter: filterStatistic } = statisticInfo.selectors;

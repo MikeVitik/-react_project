@@ -24,9 +24,6 @@ export function Tasks() {
     }
   );
   const tasks = useSelector(selectUncompleted);
-  // (state: RootState) => {
-  //   return state.tasks;
-  // });
   const fullTime = useSelector(selectTotalTime);
   const taskNameRef = useRef<HTMLInputElement>(null);
   const isChangeDisabled = !editTaskName;

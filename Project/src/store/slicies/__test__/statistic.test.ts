@@ -1,21 +1,23 @@
-import { StatisticItem, aggrigateStatistic, statisticInfo } from "../statistic";
+import {
+  StatisticItem,
+  aggrigateStatistic,
+  filterStatisticInfo,
+} from "../statistic";
 
 describe("Statistic slice", () => {
   describe("filter selector", () => {
     it("currentWeek filter", () => {
       const currentDate = new Date(2024, 3, 17);
-      const items = statisticInfo.selectors.filter(
-        {
-          statisticInfo: [
-            // In filter
-            { startDate: new Date(2024, 3, 17) } as any,
-            { startDate: new Date(2024, 3, 15) } as any,
-            { startDate: new Date(2024, 3, 21) } as any,
-            // not in filter
-            { isCompleted: true, startDate: new Date(2024, 3, 14) } as any,
-            { isCompleted: true, startDate: new Date(2024, 3, 22) } as any,
-          ],
-        },
+      const items = filterStatisticInfo(
+        [
+          // In filter
+          { startDate: new Date(2024, 3, 17) } as any,
+          { startDate: new Date(2024, 3, 15) } as any,
+          { startDate: new Date(2024, 3, 21) } as any,
+          // not in filter
+          { isCompleted: true, startDate: new Date(2024, 3, 14) } as any,
+          { isCompleted: true, startDate: new Date(2024, 3, 22) } as any,
+        ],
         "currentWeek",
         currentDate
       );
@@ -28,12 +30,8 @@ describe("Statistic slice", () => {
     it("currentWeek filter and current date is Sunday", () => {
       const currentDate = new Date(2024, 3, 21);
       expect(
-        statisticInfo.selectors.filter(
-          {
-            statisticInfo: [
-              { isCompleted: true, startDate: currentDate } as any,
-            ],
-          },
+        filterStatisticInfo(
+          [{ isCompleted: true, startDate: currentDate } as any],
           "currentWeek",
           currentDate
         )
@@ -41,17 +39,15 @@ describe("Statistic slice", () => {
     });
     it("pastWeek filter", () => {
       const currentDate = new Date(2024, 3, 17);
-      const tasks = statisticInfo.selectors.filter(
-        {
-          statisticInfo: [
-            // In filter
-            { isCompleted: true, startDate: new Date(2024, 3, 8) } as any,
-            { isCompleted: true, startDate: new Date(2024, 3, 14) } as any,
-            // not in filter
-            { isCompleted: true, startDate: new Date(2024, 3, 7) } as any,
-            { isCompleted: true, startDate: new Date(2024, 3, 15) } as any,
-          ],
-        },
+      const tasks = filterStatisticInfo(
+        [
+          // In filter
+          { isCompleted: true, startDate: new Date(2024, 3, 8) } as any,
+          { isCompleted: true, startDate: new Date(2024, 3, 14) } as any,
+          // not in filter
+          { isCompleted: true, startDate: new Date(2024, 3, 7) } as any,
+          { isCompleted: true, startDate: new Date(2024, 3, 15) } as any,
+        ],
         "pastWeek",
         currentDate
       );
@@ -62,17 +58,15 @@ describe("Statistic slice", () => {
     });
     it("twoWeeksAgo filter", () => {
       const currentDate = new Date(2024, 3, 17);
-      const tasks = statisticInfo.selectors.filter(
-        {
-          statisticInfo: [
-            // In filter
-            { isCompleted: true, startDate: new Date(2024, 3, 1) } as any,
-            { isCompleted: true, startDate: new Date(2024, 3, 7) } as any,
-            // not in filter
-            { isCompleted: true, startDate: new Date(2024, 2, 31) } as any,
-            { isCompleted: true, startDate: new Date(2024, 3, 8) } as any,
-          ],
-        },
+      const tasks = filterStatisticInfo(
+        [
+          // In filter
+          { isCompleted: true, startDate: new Date(2024, 3, 1) } as any,
+          { isCompleted: true, startDate: new Date(2024, 3, 7) } as any,
+          // not in filter
+          { isCompleted: true, startDate: new Date(2024, 2, 31) } as any,
+          { isCompleted: true, startDate: new Date(2024, 3, 8) } as any,
+        ],
         "twoWeeksAgo",
         currentDate
       );

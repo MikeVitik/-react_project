@@ -34,7 +34,6 @@ const items = generateStatistics();
 const defaultValues = aggrigateStatistic(
   filterStatistic({ statisticInfo: items }, "currentWeek")
 );
-console.log(items, defaultValues, 1);
 export function Statistic({
   filter = "currentWeek",
   onFilterChange,

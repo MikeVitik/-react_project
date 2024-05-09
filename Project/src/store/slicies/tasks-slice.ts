@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { formatTime } from "../utils/format-time";
 
 export interface SerialiazableTask {
@@ -115,9 +115,12 @@ export const tasksSlice = createSlice({
         tasksSlice.getSelectors().getTask(sliceState, taskId).pomodoroCount > 1
       );
     },
-    selectUncompleted: (sliceState) => {
-      return sliceState.filter(({ isCompleted }) => !isCompleted);
-    },
+    selectUncompleted: createSelector(
+      (state: SerialiazableTask[]) => state,
+      (state) => {
+        return state.filter(({ isCompleted }) => !isCompleted);
+      }
+    ),
     selectTotalTime: (sliceState) => {
       const tasks = tasksSlice.getSelectors().selectUncompleted(sliceState);
       const totalTime: number = tasks.reduce(
