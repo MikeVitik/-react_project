@@ -11,12 +11,17 @@ const store = configureAppStore({
   statisticInfo: generateStatistics(),
 });
 
+(window as any).TIME_RATIO = 25;
+
 let prevTime = Date.now();
 setInterval(() => {
   const delta = Date.now() - prevTime;
   prevTime = Date.now();
-  if (store.getState().timer.state === "running") {
-    store.dispatch(updateTime(delta));
+  if (
+    store.getState().timer.state === "running" ||
+    store.getState().timer.state === "pause"
+  ) {
+    store.dispatch(updateTime(delta * ((window as any).TIME_RATIO || 25)));
   }
 }, 500);
 

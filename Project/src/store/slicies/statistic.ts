@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { TOTAL_MILLISECONDS_IN_DAY } from "../const";
+import { ONE_MINUTES, TOTAL_MILLISECONDS_IN_DAY } from "../const";
 import { normalizeDay } from "../utils/normalize-day";
 import { CurrentTask } from "./current-task";
 import { Timer } from "./timer-slice";
@@ -138,17 +138,18 @@ export const aggrigateStatistic = (
             ...aggrigate[key],
             completedPomodoro:
               aggrigate[key].completedPomodoro +
-              (item.completedPomodoro ?? 0) / 1000,
-            [timeName]: aggrigate[key][timeName] + (item[timeName] ?? 0) / 1000,
+              (item.completedPomodoro ?? 0) / ONE_MINUTES,
+            [timeName]:
+              aggrigate[key][timeName] + (item[timeName] ?? 0) / ONE_MINUTES,
             pauseCount: aggrigate[key].pauseCount + pauseCount,
           };
         } else {
           aggrigate[key] = {
             day: key,
-            completedPomodoro: (item.completedPomodoro ?? 0) / 1000,
-            workTime: (item.workTime ?? 0) / 1000,
+            completedPomodoro: (item.completedPomodoro ?? 0) / ONE_MINUTES,
+            workTime: (item.workTime ?? 0) / ONE_MINUTES,
             pauseCount,
-            pauseTime: (item.pauseTime ?? 0) / 1000,
+            pauseTime: (item.pauseTime ?? 0) / ONE_MINUTES,
           };
         }
         return aggrigate;

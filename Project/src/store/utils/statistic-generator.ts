@@ -2,7 +2,7 @@ import { TASK_TIME, TOTAL_MILLISECONDS_IN_DAY } from "../const";
 import { StatisticItem } from "../slicies/statistic";
 
 export function generateStatistics(
-  currentDate = new Date(),
+  currentDate = new Date(Date.now() - TOTAL_MILLISECONDS_IN_DAY),
   seed = 1
 ): StatisticItem[] {
   function random(max: number) {
@@ -25,14 +25,21 @@ export function generateStatistics(
           workTime: TASK_TIME,
         } satisfies StatisticItem);
       } else {
-        const time = random(20 * 1000);
-        const type: StatisticItem["type"] = random(2) === 0 ? "work" : "pause";
-        result.push({
-          taskId: id,
-          startDateString,
-          type,
-          [type + "Time"]: time,
-        } satisfies StatisticItem);
+        const workTime = random(TASK_TIME);
+        result.push(
+          {
+            taskId: id,
+            startDateString,
+            type: "work",
+            workTime,
+          } satisfies StatisticItem,
+          {
+            taskId: id,
+            startDateString,
+            type: "pause",
+            pauseTime: TASK_TIME - workTime,
+          } satisfies StatisticItem
+        );
       }
     }
     currentDate = new Date(currentDate.getTime() - TOTAL_MILLISECONDS_IN_DAY);
