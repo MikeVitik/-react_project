@@ -1,4 +1,5 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
+import { ONE_MINUTES } from "../const";
 import { getTimeFractions } from "../utils/format-time";
 
 export interface Timer {
@@ -7,7 +8,14 @@ export interface Timer {
   totalTime: number;
   currentTime: number;
 }
-
+const timeValue = createSelector(
+  (time: number) => time,
+  (time) => {
+    const elapsedTime = new Date(time);
+    const { m, s } = getTimeFractions(elapsedTime);
+    return { m, s: s < 10 ? "0" + s : s };
+  }
+);
 export const timerSlice = createSlice({
   name: "timer",
   initialState: {
@@ -34,6 +42,9 @@ export const timerSlice = createSlice({
       state.state = "pause";
       state.currentTime = 0;
     },
+    addTime: (state) => {
+      state.totalTime += ONE_MINUTES;
+    },
     updateTime: {
       prepare: (delta: number) => ({ payload: { delta } }),
       reducer: (state, action: PayloadAction<{ delta: number }>) => {
@@ -54,11 +65,10 @@ export const timerSlice = createSlice({
   },
   selectors: {
     getTimerValue: ({ totalTime, time }) => {
-      const elapsedTime = new Date(totalTime - time);
-      const { m, s } = getTimeFractions(elapsedTime);
-      return { m, s: s < 10 ? "0" + s : s };
+      return timeValue(totalTime - time);
+    },
+    canAddTime: (state) => {
+      return state.state !== "end";
     },
   },
 });
-
-export const { getTimerValue } = timerSlice.selectors;

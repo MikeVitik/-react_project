@@ -12,9 +12,11 @@ const store = configureAppStore({
 });
 
 (window as any).TIME_RATIO = 25;
+(window as any).TIME_STOP = false;
 
 let prevTime = Date.now();
 setInterval(() => {
+  if ((window as any).TIME_STOP) return;
   const delta = Date.now() - prevTime;
   prevTime = Date.now();
   if (

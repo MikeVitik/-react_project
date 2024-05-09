@@ -33,6 +33,7 @@ export const { selectCanDecrement, selectTotalTime } = tasksSlice.selectors;
 
 export const { cancelTaskEdit, editTask, updateEditTaskName } =
   taskEditorSlice.actions;
-export const { getTimerValue } = timerSlice.selectors;
+export const { getTimerValue, canAddTime } = timerSlice.selectors;
+export const { addTime } = timerSlice.actions;
 
 export { generateStatistics } from "./utils/statistic-generator";
