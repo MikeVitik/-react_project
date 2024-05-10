@@ -48,7 +48,7 @@ const mapStateToSecondaryName: {
   workPause: "Стоп",
   break: "Стоп",
   breakTimer: "Продолжить",
-  breakStop: "Продолжить",
+  breakStop: "Пропустить",
   workStop: "Сделано",
 };
 const mapStateToSecondaryAction: {

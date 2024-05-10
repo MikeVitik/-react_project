@@ -70,7 +70,11 @@ export const pauseBreak = createAsyncThunk<void, void, { state: RootState }>(
   "pauseBreak",
   (_, { dispatch, getState }) => {
     dispatch(currentTaskSlice.actions.pauseBreak());
-    dispatch(timerSlice.actions.stop());
+    if (timerSlice.selectSlice(getState()).state === "end") {
+      dispatch(timerSlice.actions.create(BREAK_TIME));
+    } else {
+      dispatch(timerSlice.actions.stop());
+    }
   }
 );
 export const continueBreak = createAsyncThunk<void, void, { state: RootState }>(
@@ -84,13 +88,11 @@ export const nextTask = createAsyncThunk<void, void, { state: RootState }>(
   "nextTask",
   (_, { dispatch, getState }) => {
     dispatch(currentTaskSlice.actions.nextTaskOrInited());
-    dispatch(
-      timerSlice.actions.create(
-        currentTaskSlice.selectSlice(getState()).state === "workInited"
-          ? TASK_TIME
-          : 0
-      )
-    );
+    if (currentTask(getState()).taskId === undefined) {
+      dispatch(timerSlice.actions.reset());
+    } else {
+      dispatch(timerSlice.actions.create(TASK_TIME));
+    }
   }
 );
 export const completeTask = createAsyncThunk<void, void, { state: RootState }>(

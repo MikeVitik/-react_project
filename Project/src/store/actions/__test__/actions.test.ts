@@ -7,6 +7,7 @@ import {
   continueTask,
   createTask,
   nextTask,
+  pauseBreak,
   pauseTask,
   startBreak,
   startTask,
@@ -175,6 +176,40 @@ describe("taskActions", () => {
     });
   });
 
+  describe("pauseBreak", () => {
+    it("should create new timer if time is end", () => {
+      const store = configureAppStore({
+        currentTask: {
+          taskId: 0,
+          state: "breakTimer",
+        } satisfies CurrentTask,
+        timer: { time: 1000, currentTime: 1000, state: "end", totalTime: 1000 },
+        tasks: [{ id: 0, name: "New Task" }],
+      });
+      store.dispatch(pauseBreak());
+      expect(store.getState().currentTask.state).toBe("breakStop");
+      expect(store.getState().timer.state).toEqual("created");
+    });
+    it("should create stop timer", () => {
+      const store = configureAppStore({
+        currentTask: {
+          taskId: 0,
+          state: "breakTimer",
+        } satisfies CurrentTask,
+        timer: {
+          time: 500,
+          currentTime: 1000,
+          state: "running",
+          totalTime: 500,
+        },
+        tasks: [{ id: 0, name: "New Task" }],
+      });
+      store.dispatch(pauseBreak());
+      expect(store.getState().currentTask.state).toBe("breakStop");
+      expect(store.getState().timer.state).toEqual("pause");
+    });
+  });
+
   describe("completeTask", () => {
     const initialState = {
       currentTask: {
@@ -236,7 +271,7 @@ describe("taskActions", () => {
       });
       store.dispatch(nextTask());
       expect(store.getState().currentTask.state).toBe("inited");
-      expect(store.getState().timer.state).toEqual("created");
+      expect(store.getState().timer.state).toEqual("inited");
       expect(store.getState().timer.totalTime).toEqual(0);
       expect(store.getState().tasks[0].isCompleted).toBeUndefined();
     });
