@@ -47,6 +47,7 @@ export const currentTaskSlice = createSlice({
     },
     stopTaskWork: (state) => {
       state.state = "workStop";
+      state.hasPause = false;
     },
     startBreak: (state) => {
       state.state = "break";

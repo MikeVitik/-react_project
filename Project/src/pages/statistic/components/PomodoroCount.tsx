@@ -1,7 +1,6 @@
 import { PomodoroIcon } from "../../../components/icons/Pomodoro";
 
-export const PomodoroCount = () => {
-  const pomodoroCount = 22;
+export const PomodoroCount = ({ pomodoroCount }: { pomodoroCount: number }) => {
   return (
     <div className="flex flex-col bg-light-gray">
       <div className="flex justify-center items-center text-light-text p-4">

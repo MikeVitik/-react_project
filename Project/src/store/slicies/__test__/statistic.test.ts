@@ -80,7 +80,7 @@ describe("Statistic slice", () => {
     it("should return all week values for one the Monday item", () => {
       const items: StatisticItem[] = [
         {
-          completedPomodoro: 40000,
+          isPomodoroComplete: true,
           taskId: -15,
           pauseTime: 17875,
           startDateString: new Date(2024, 3, 15).toUTCString(),
@@ -95,7 +95,7 @@ describe("Statistic slice", () => {
     });
     it("should summarize same day values", () => {
       const workItem: StatisticItem = {
-        completedPomodoro: 40000,
+        isPomodoroComplete: true,
         taskId: -15,
         pauseTime: 17875,
         startDateString: new Date(2024, 3, 15).toUTCString(),

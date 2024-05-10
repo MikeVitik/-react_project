@@ -11,7 +11,8 @@ describe("generateStatistic", () => {
     );
     expect(
       items.filter(
-        ({ completedPomodoro, workTime }) => completedPomodoro === workTime
+        ({ isPomodoroComplete: completedPomodoro, workTime }) =>
+          completedPomodoro === workTime
       ).length
     ).toBeGreaterThan(0);
     expect(items).toMatchSnapshot();

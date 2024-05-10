@@ -50,6 +50,12 @@ export const continueTask = createAsyncThunk<void, void, { state: RootState }>(
 export const stopTaskWork = createAsyncThunk<void, void, { state: RootState }>(
   "stopTaskWork",
   (_, { dispatch, getState }) => {
+    // if (!currentTaskSlice.selectSlice(getState()).hasPause) {
+    //   dispatch(tasksSlice.actions.incrementCurrentPomodoro())
+    // }
+    dispatch(
+      statisticInfo.actions.add(getState().currentTask, getState().timer)
+    );
     dispatch(timerSlice.actions.stop());
     dispatch(currentTaskSlice.actions.stopTaskWork());
   }
@@ -59,9 +65,6 @@ export const startBreak = createAsyncThunk<void, void, { state: RootState }>(
   "startBreak",
   (_, { dispatch, getState }) => {
     dispatch(currentTaskSlice.actions.startBreak());
-    dispatch(
-      statisticInfo.actions.add(getState().currentTask, getState().timer)
-    );
     dispatch(timerSlice.actions.create(BREAK_TIME));
   }
 );

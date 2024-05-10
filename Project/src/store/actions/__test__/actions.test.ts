@@ -1,4 +1,4 @@
-import { TASK_TIME } from "../../const";
+import { ONE_MINUTES, TASK_TIME } from "../../const";
 import { CurrentTask } from "../../slicies/current-task";
 import { Timer, timerSlice } from "../../slicies/timer-slice";
 import { configureAppStore } from "../../store";
@@ -11,6 +11,7 @@ import {
   pauseTask,
   startBreak,
   startTask,
+  stopTaskWork,
 } from "../task-actions";
 import { updateTime } from "../update-time";
 
@@ -54,7 +55,6 @@ describe("taskActions", () => {
       store.dispatch(startTask());
 
       expect(store.getState().currentTask.state).toBe("workTimer");
-      //      expect(store.getState().currentTask.primaryAction).toBe("pauseTask");
       expect(store.getState().timer.state).toBe("running");
     });
   });
@@ -81,6 +81,7 @@ describe("taskActions", () => {
         startDateString: "Wed, 01 Apr 2020 07:00:00 GMT",
         taskId: expect.any(Number),
         type: "work",
+        isPomodoroComplete: false,
         workTime: 3000,
       });
     });
@@ -101,8 +102,56 @@ describe("taskActions", () => {
       expect(store.getState().statisticInfo[1]).toEqual({
         startDateString: "Wed, 01 Apr 2020 07:00:00 GMT",
         taskId: expect.any(Number),
+        isPomodoroComplete: false,
         type: "pause",
         pauseTime: 1500,
+      });
+    });
+  });
+
+  describe("stopTaskWork", () => {
+    it("should add statisticInfo for working timer completed pomodoro", () => {
+      const store = configureAppStore({
+        currentTask: { taskId: 0, state: "workTimer" },
+        timer: {
+          time: TASK_TIME,
+          currentTime: TASK_TIME,
+          state: "running",
+          totalTime: TASK_TIME + ONE_MINUTES,
+        } satisfies Timer,
+        tasks: [{ id: 0, name: "New Task" }],
+      });
+      store.dispatch(stopTaskWork());
+      expect(store.getState().statisticInfo[0]).toEqual({
+        startDateString: expect.any(String),
+        taskId: 0,
+        type: "work",
+        isPomodoroComplete: true,
+        workTime: TASK_TIME,
+      });
+    });
+    it("should add statisticInfo witout completed pomodoro because pause", () => {
+      const store = configureAppStore({
+        currentTask: {
+          taskId: 0,
+          state: "workPause",
+          hasPause: true,
+        } satisfies CurrentTask,
+        timer: {
+          time: TASK_TIME,
+          currentTime: TASK_TIME,
+          state: "pause",
+          totalTime: TASK_TIME + ONE_MINUTES,
+        } satisfies Timer,
+        tasks: [{ id: 0, name: "New Task" }],
+      });
+      store.dispatch(stopTaskWork());
+      expect(store.getState().statisticInfo[0]).toEqual({
+        startDateString: expect.any(String),
+        taskId: 0,
+        type: "pause",
+        isPomodoroComplete: false,
+        pauseTime: TASK_TIME,
       });
     });
   });
@@ -122,12 +171,6 @@ describe("taskActions", () => {
       store.dispatch(startBreak());
       expect(store.getState().currentTask.state).toBe("break");
       expect(store.getState().timer.state).toEqual("created");
-      expect(store.getState().statisticInfo[0]).toEqual({
-        startDateString: expect.any(String),
-        taskId: 0,
-        type: "pause",
-        pauseTime: 500,
-      });
     });
     it("startBreak timer running", () => {
       const store = configureAppStore({
@@ -147,12 +190,6 @@ describe("taskActions", () => {
       store.dispatch(startBreak());
       expect(store.getState().currentTask.state).toBe("break");
       expect(store.getState().timer.state).toEqual("created");
-      expect(store.getState().statisticInfo[0]).toEqual({
-        startDateString: expect.any(String),
-        taskId: 0,
-        type: "work",
-        workTime: 500,
-      });
     });
     it("startBreak from timer end", () => {
       const store = configureAppStore({
@@ -166,13 +203,6 @@ describe("taskActions", () => {
       store.dispatch(startBreak());
       expect(store.getState().currentTask.state).toBe("break");
       expect(store.getState().timer.state).toEqual("created");
-      expect(store.getState().statisticInfo[0]).toEqual({
-        startDateString: expect.any(String),
-        taskId: 0,
-        completedPomodoro: 1000,
-        type: "work",
-        workTime: 1000,
-      });
     });
   });
 

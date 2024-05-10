@@ -14,14 +14,14 @@ export function generateStatistics(
   let id = -1;
   for (let day = 0; day < 7 * 3; day++) {
     for (let attemps = 0; attemps < 5; attemps++) {
-      const isCompletedPomodoro = random(3) <= 1;
+      const isPomodoroComplete = random(3) <= 1;
       const startDateString = currentDate.toUTCString();
-      if (isCompletedPomodoro) {
+      if (isPomodoroComplete) {
         result.push({
           taskId: id,
           startDateString,
           type: "work",
-          completedPomodoro: TASK_TIME,
+          isPomodoroComplete: true,
           workTime: TASK_TIME,
         } satisfies StatisticItem);
       } else {

@@ -44,9 +44,8 @@ export function Statistic({
   values?: StatisticValues[];
 }) {
   const [selectedDay, onSelectDayChanged] = useState(0);
-  const { workTime, completedPomodoro, pauseCount, pauseTime } =
+  const { workTime, completedPomodoro, pauseCount, pauseTime, focusValue } =
     values[selectedDay] || {};
-  const focusValue = Math.floor((completedPomodoro / workTime) * 100);
   return (
     <>
       <div className="flex justify-between pb-4">
@@ -66,7 +65,7 @@ export function Statistic({
           <SelectedDay selectedDay={selectedDay} workTime={workTime} />
         </div>
         <div className="col-start-1 col-end-4">
-          <PomodoroCount />
+          <PomodoroCount pomodoroCount={completedPomodoro} />
         </div>
         <div className="row-start-1 row-end-3 col-start-4 col-end-13">
           <Chart
@@ -81,7 +80,7 @@ export function Statistic({
           <InfoCard
             type={workTime === 0 ? "inactive" : "focus"}
             text="Фокус"
-            data={focusValue + "%"}
+            data={Math.floor(focusValue) + "%"}
             icon={PauseIcon}
           ></InfoCard>
         </div>

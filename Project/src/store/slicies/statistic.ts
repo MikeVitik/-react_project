@@ -1,5 +1,5 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
-import { ONE_MINUTES, TOTAL_MILLISECONDS_IN_DAY } from "../const";
+import { ONE_MINUTES, TASK_TIME, TOTAL_MILLISECONDS_IN_DAY } from "../const";
 import { normalizeDay } from "../utils/normalize-day";
 import { CurrentTask } from "./current-task";
 import { Timer } from "./timer-slice";
@@ -10,12 +10,13 @@ export interface StatisticValues {
   workTime: number;
   pauseCount: number;
   pauseTime: number;
+  focusValue: number;
 }
 export interface StatisticItem {
   taskId: number;
   type: "work" | "pause";
   startDateString: string;
-  completedPomodoro?: number;
+  isPomodoroComplete?: boolean;
   workTime?: number;
   pauseTime?: number;
 }
@@ -101,7 +102,7 @@ export const aggrigateStatistic = (
             ...aggrigate[key],
             completedPomodoro:
               aggrigate[key].completedPomodoro +
-              (item.completedPomodoro ?? 0) / ONE_MINUTES,
+              (item.isPomodoroComplete ? 1 : 0),
             [timeName]:
               aggrigate[key][timeName] + (item[timeName] ?? 0) / ONE_MINUTES,
             pauseCount: aggrigate[key].pauseCount + pauseCount,
@@ -109,14 +110,19 @@ export const aggrigateStatistic = (
         } else {
           aggrigate[key] = {
             day: key,
-            completedPomodoro: (item.completedPomodoro ?? 0) / ONE_MINUTES,
+            completedPomodoro: item.isPomodoroComplete ? 1 : 0,
             workTime: (item.workTime ?? 0) / ONE_MINUTES,
             pauseCount,
             pauseTime: (item.pauseTime ?? 0) / ONE_MINUTES,
+            focusValue: 0,
           };
         }
         return aggrigate;
       }, {})
+  );
+  result.forEach(
+    (item) =>
+      (item.focusValue = ((item.completedPomodoro * 25) / item.workTime) * 100)
   );
   const dayRemains = 7 - result.length;
   if (dayRemains > 0) {
@@ -126,6 +132,7 @@ export const aggrigateStatistic = (
       workTime: 0,
       pauseCount: 0,
       pauseTime: 0,
+      focusValue: 0,
     }));
     return [...result, ...days];
   }
@@ -147,15 +154,13 @@ export const statisticInfo = createSlice({
       ) => {
         const type = timerState !== "pause" ? "work" : "pause";
         const name = timerState !== "pause" ? "workTime" : "pauseTime";
-        const completedPomodoro =
-          currentTaskState === "break" && type === "work" && hasPause !== true
-            ? currentTime
-            : undefined;
+        const isPomodoroComplete =
+          type === "work" && hasPause !== true && currentTime >= TASK_TIME;
         return {
           payload: {
             taskId: taskId!,
             type,
-            completedPomodoro,
+            isPomodoroComplete,
             startDateString: new Date().toUTCString(),
             [name]: currentTime,
           } satisfies StatisticItem,

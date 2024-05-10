@@ -2,8 +2,9 @@
 
 exports[`Statistic slice aggrigateTasks should return all week values for one the Monday item 1`] = `
 Object {
-  "completedPomodoro": 0.6666666666666666,
+  "completedPomodoro": 1,
   "day": 0,
+  "focusValue": 1032.3752890650808,
   "pauseCount": 0,
   "pauseTime": 0.29791666666666666,
   "workTime": 2.4216,
@@ -14,6 +15,7 @@ exports[`Statistic slice aggrigateTasks should return all week values for one th
 Object {
   "completedPomodoro": 0,
   "day": 1,
+  "focusValue": 0,
   "pauseCount": 0,
   "pauseTime": 0,
   "workTime": 0,
@@ -22,8 +24,9 @@ Object {
 
 exports[`Statistic slice aggrigateTasks should summarize same day values 1`] = `
 Object {
-  "completedPomodoro": 1.3333333333333333,
+  "completedPomodoro": 2,
   "day": 0,
+  "focusValue": 1032.3752890650808,
   "pauseCount": 2,
   "pauseTime": 0.89375,
   "workTime": 4.8432,
