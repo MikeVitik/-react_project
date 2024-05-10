@@ -1,17 +1,17 @@
-import {
-  configureStore,
-  createListenerMiddleware,
-  isAnyOf,
-} from "@reduxjs/toolkit";
+import { configureStore, createListenerMiddleware } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { rootReducer } from "./reducers";
-import { addTask } from "./slicies/tasks-slice";
-export function configureAppStore(preloadedState = {}) {
+export function configureAppStore(
+  preloadedState = {},
+  alarmAudio?: HTMLAudioElement
+) {
   const listenerMiddleware = createListenerMiddleware();
   listenerMiddleware.startListening({
-    predicate: isAnyOf(addTask),
+    predicate: (_, state) => (state as RootState).timer.state === "end",
     effect: () => {
-      console.log("Added___");
+      if (alarmAudio) {
+        alarmAudio.play();
+      }
     },
   });
   const store = configureStore({

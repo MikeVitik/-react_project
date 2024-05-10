@@ -3,7 +3,7 @@ import { Timer, timerSlice } from "../timer-slice";
 describe("TimerSlice", () => {
   it("should return initial state", () => {
     expect(timerSlice.reducer(undefined, { type: "" })).toEqual({
-      state: "end",
+      state: "inited",
       time: 0,
       currentTime: 0,
       totalTime: 0,
@@ -72,6 +72,13 @@ describe("TimerSlice", () => {
       timerSlice
         .getSelectors()
         .getTimerValue({ totalTime: 60 * 1000, time: 0 } as Timer).s
+    ).toBe("00");
+  });
+  it("should return correct value for -10 seconds", () => {
+    expect(
+      timerSlice
+        .getSelectors()
+        .getTimerValue({ totalTime: 60, time: 70 } as Timer).s
     ).toBe("00");
   });
 });

@@ -7,9 +7,12 @@ import App from "./App";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 
-const store = configureAppStore({
-  statisticInfo: generateStatistics(),
-});
+const store = configureAppStore(
+  {
+    statisticInfo: generateStatistics(),
+  },
+  document.getElementById("alarm") as HTMLAudioElement
+);
 
 (window as any).TIME_RATIO = 25;
 (window as any).TIME_STOP = false;

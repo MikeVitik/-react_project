@@ -3,13 +3,13 @@ import { ONE_MINUTES } from "../const";
 import { getTimeFractions } from "../utils/format-time";
 
 export interface Timer {
-  state: "created" | "running" | "pause" | "end";
+  state: "inited" | "created" | "running" | "pause" | "end";
   time: number;
   totalTime: number;
   currentTime: number;
 }
 const timeValue = createSelector(
-  (time: number) => time,
+  (time: number) => (time > 0 ? time : 0),
   (time) => {
     const elapsedTime = new Date(time);
     const { m, s } = getTimeFractions(elapsedTime);
@@ -19,14 +19,25 @@ const timeValue = createSelector(
 export const timerSlice = createSlice({
   name: "timer",
   initialState: {
-    state: "end",
+    state: "inited",
     totalTime: 0,
     time: 0,
     currentTime: 0,
   } satisfies Timer as Timer,
   reducers: {
+    reset: (state) => {
+      return {
+        ...state,
+        isRunning: false,
+        time: 0,
+        totalTime: 0,
+        currentTime: 0,
+        state: "inited",
+      };
+    },
     create: (state, action: PayloadAction<number>) => {
       return {
+        ...state,
         isRunning: false,
         time: 0,
         totalTime: action.payload,
