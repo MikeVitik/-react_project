@@ -176,6 +176,18 @@ export const statisticInfo = createSlice({
       [(sliceState) => sliceState, (sliceState, filter: FilterType) => filter],
       filterStatisticInfo
     ),
+    taskPomodoroCount: createSelector(
+      [
+        (sliceState: StatisticItem[]) => sliceState,
+        (_, taskId: number) => taskId,
+      ],
+      (sliceState, taskId) => {
+        return sliceState.filter(
+          (item) => item.taskId === taskId && item.isPomodoroComplete
+        ).length;
+      }
+    ),
   },
 });
-export const { filter: filterStatistic } = statisticInfo.selectors;
+export const { filter: filterStatistic, taskPomodoroCount } =
+  statisticInfo.selectors;

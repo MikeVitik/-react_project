@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { currentTask, getMode } from "store";
+import { RootState, currentTask, getMode, taskPomodoroCount } from "store";
 
 const modeColor = {
   prepare: "bg-gray",
@@ -10,6 +10,9 @@ const modeColor = {
 export function TaskHeader() {
   const mode = useSelector(getMode);
   const task = useSelector(currentTask);
+  const pomodoroCount = useSelector((state: RootState) =>
+    taskPomodoroCount(state, task.id)
+  );
 
   return (
     <div
@@ -17,7 +20,7 @@ export function TaskHeader() {
     >
       <div className="place-self-start">{task.name}</div>
       <div className="place-self-end">
-        <span className="font-light">{`Помидор ${task.pomodoroCount}`}</span>
+        <span className="font-light">{`Помидор ${pomodoroCount}`}</span>
       </div>
     </div>
   );

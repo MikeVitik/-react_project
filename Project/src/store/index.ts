@@ -9,7 +9,11 @@ export type { CurrentTask } from "./slicies/current-task";
 
 export const { getMode } = currentTaskSlice.selectors;
 
-export { aggrigateStatistic, filterStatistic } from "./slicies/statistic";
+export {
+  aggrigateStatistic,
+  filterStatistic,
+  taskPomodoroCount,
+} from "./slicies/statistic";
 export type { FilterType, StatisticValues } from "./slicies/statistic";
 
 export { configureAppStore, useAppDispatch } from "./store";

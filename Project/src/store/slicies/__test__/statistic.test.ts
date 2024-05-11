@@ -2,6 +2,7 @@ import {
   StatisticItem,
   aggrigateStatistic,
   filterStatisticInfo,
+  taskPomodoroCount,
 } from "../statistic";
 
 describe("Statistic slice", () => {
@@ -74,6 +75,40 @@ describe("Statistic slice", () => {
         { isCompleted: true, startDate: new Date(2024, 3, 1) } as any,
         { isCompleted: true, startDate: new Date(2024, 3, 7) } as any,
       ]);
+    });
+  });
+  describe("taskPomodoroCount", () => {
+    const items: StatisticItem[] = [
+      {
+        isPomodoroComplete: true,
+        taskId: 1,
+        pauseTime: 0,
+        startDateString: new Date(2024, 3, 15).toUTCString(),
+        workTime: 145296,
+        type: "work",
+      },
+      {
+        isPomodoroComplete: false,
+        taskId: 1,
+        pauseTime: 0,
+        startDateString: new Date(2024, 3, 15).toUTCString(),
+        workTime: 1000,
+        type: "work",
+      },
+      {
+        isPomodoroComplete: false,
+        taskId: 1,
+        pauseTime: 17875,
+        startDateString: new Date(2024, 3, 15).toUTCString(),
+        workTime: 0,
+        type: "pause",
+      },
+    ];
+    it("should return 1 pomodoro for existing task", () => {
+      expect(taskPomodoroCount({ statisticInfo: items }, 1)).toBe(1);
+    });
+    it("should return 0 pomodoro for not existing task", () => {
+      expect(taskPomodoroCount({ statisticInfo: items }, 2)).toBe(0);
     });
   });
   describe("aggrigateTasks", () => {
