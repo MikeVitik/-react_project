@@ -8,7 +8,7 @@ import { Timer } from "./components/Timer";
 export function Home() {
   return (
     <>
-      <div className="px-20 pt-24 grid grid-cols-home gap-4">
+      <div className="grid grid-cols-home gap-4">
         <div>
           <Description></Description>
           <Tasks />

@@ -10,7 +10,9 @@ import {
 } from "store";
 import { InfoCard } from "../../components/InfoCard";
 import { Chart } from "../../components/chart";
+import { FocusIcon } from "../../components/icons/Focus";
 import { PauseIcon } from "../../components/icons/Pause";
+import { StopsIcon } from "../../components/icons/Stops";
 import { PomodoroCount } from "./components/PomodoroCount";
 import { SelectedDay } from "./components/SelectedDay";
 
@@ -81,7 +83,7 @@ export function Statistic({
             type={workTime === 0 ? "inactive" : "focus"}
             text="Фокус"
             data={Math.floor(focusValue) + "%"}
-            icon={PauseIcon}
+            icon={FocusIcon}
           ></InfoCard>
         </div>
         <div>
@@ -97,7 +99,7 @@ export function Statistic({
             type={workTime === 0 ? "inactive" : "stop"}
             text="Остановки"
             data={pauseCount.toString()}
-            icon={PauseIcon}
+            icon={StopsIcon}
           ></InfoCard>
         </div>
       </div>

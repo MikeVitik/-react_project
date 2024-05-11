@@ -1,4 +1,4 @@
-export function PauseIcon(props: { className?: string }) {
+export function FocusIcon(props: { className?: string }) {
   return (
     <svg
       {...props}
@@ -15,7 +15,13 @@ export function PauseIcon(props: { className?: string }) {
         strokeLinejoin="round"
       />
       <path
-        d="M64.3154 37.1579V64.3158L77.8944 77.8947"
+        d="M64.5 102C85.2107 102 102 85.2107 102 64.5C102 43.7893 85.2107 27 64.5 27C43.7893 27 27 43.7893 27 64.5C27 85.2107 43.7893 102 64.5 102Z"
+        strokeWidth="5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M64.5 85C75.8218 85 85 75.8218 85 64.5C85 53.1782 75.8218 44 64.5 44C53.1782 44 44 53.1782 44 64.5C44 75.8218 53.1782 85 64.5 85Z"
         strokeWidth="5"
         strokeLinecap="round"
         strokeLinejoin="round"

@@ -22,7 +22,7 @@ export function Layout() {
           </NavItem>
         </Link>
       </Header>
-      <div>
+      <div className="px-20 pt-24">
         <Outlet />
       </div>
     </>

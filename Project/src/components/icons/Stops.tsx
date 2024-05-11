@@ -1,4 +1,4 @@
-export function PauseIcon(props: { className?: string }) {
+export function StopsIcon(props: { className?: string }) {
   return (
     <svg
       {...props}
@@ -15,7 +15,7 @@ export function PauseIcon(props: { className?: string }) {
         strokeLinejoin="round"
       />
       <path
-        d="M64.3154 37.1579V64.3158L77.8944 77.8947"
+        d="M28 27L102 101"
         strokeWidth="5"
         strokeLinecap="round"
         strokeLinejoin="round"
