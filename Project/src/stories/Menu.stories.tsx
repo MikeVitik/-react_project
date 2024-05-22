@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Menu } from "../components/Menu";
 import { MenuItem } from "../components/MenuItem";
-import { MinusIcon } from "../components/icons/Minus";
-import { PlusIcon } from "../components/icons/Plus";
+import { MinusIcon } from "../components/icons/minus";
+import { PlusIcon } from "../components/icons/plus";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {

@@ -1,4 +1,4 @@
-import { PomodoroIcon } from "../../../components/icons/Pomodoro";
+import { PomodoroIcon } from "../../../components/icons/pomodoro";
 
 export const PomodoroCount = ({ pomodoroCount }: { pomodoroCount: number }) => {
   return (

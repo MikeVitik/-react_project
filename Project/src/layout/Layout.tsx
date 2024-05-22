@@ -1,8 +1,8 @@
 import { Link, Outlet } from "react-router-dom";
 import { Header } from "../components/Header";
 import { NavItem } from "../components/NavItem";
-import { PomodoroIcon } from "../components/icons/Pomodoro";
-import { StatisticIcon } from "../components/icons/Statistic";
+import { PomodoroIcon } from "../components/icons/pomodoro";
+import { StatisticIcon } from "../components/icons/statistic";
 
 export function Layout() {
   return (

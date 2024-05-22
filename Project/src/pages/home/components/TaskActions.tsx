@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { taskActions, useAppDispatch } from "store";
-import { Button } from "../../../components/Button";
+import { Button } from "../../../components/button";
 
 export const TaskActions = () => {
   const {

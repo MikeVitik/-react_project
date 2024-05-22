@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { addTime, canAddTime, getTimerValue } from "store";
-import { Button } from "../../../components/Button";
+import { Button } from "../../../components/button";
 
 export function Timer() {
   const { m, s } = useSelector(getTimerValue);

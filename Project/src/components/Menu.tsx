@@ -1,4 +1,4 @@
-import { MenuIcon } from "./icons/Menu";
+import { MenuIcon } from "./icons/menu";
 import styles from "./menu.module.css";
 export function Menu({ children }: React.PropsWithChildren) {
   return (

@@ -13,8 +13,8 @@ import {
   updateEditTaskName,
   useAppDispatch,
 } from "store";
-import { Button } from "../../../components/Button";
 import { TaskItem } from "../../../components/TaskItem";
+import { Button } from "../../../components/button";
 import { TaskMenu } from "./TaskMenu";
 
 export function Tasks() {
