@@ -25,8 +25,8 @@ export const currentTaskSlice = createSlice({
     initTask: (state, action: { payload: number | undefined }) => {
       if (state.state === "inited") {
         state.state = "workInited";
-        state.taskId = action.payload;
       }
+      state.taskId = action.payload;
     },
     startTask: (state) => {
       if (state.state === "workInited") {

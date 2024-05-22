@@ -3,7 +3,12 @@ import { BREAK_TIME, TASK_TIME } from "../const";
 import { currentTask } from "../selectors/current-task-selector";
 import { currentTaskSlice } from "../slicies/current-task";
 import { statisticInfo } from "../slicies/statistic";
-import { addTask, getNextTask, tasksSlice } from "../slicies/tasks-slice";
+import {
+  addTask,
+  getNextTask,
+  deleteTask as sliceDeleteTask,
+  tasksSlice,
+} from "../slicies/tasks-slice";
 import { timerSlice } from "../slicies/timer-slice";
 import { RootState } from "../store";
 
@@ -19,6 +24,15 @@ export const createTask = createAsyncThunk<void, string, { state: RootState }>(
   }
 );
 
+export const deleteTask = createAsyncThunk<void, number, { state: RootState }>(
+  "deleteTask",
+  (taskId, { dispatch, getState }) => {
+    if (taskId === currentTask(getState()).taskId) {
+      dispatch(completeTask());
+    }
+    dispatch(sliceDeleteTask(taskId));
+  }
+);
 export const startTask = createAsyncThunk<void, void, { state: RootState }>(
   "startTask",
   (_, { dispatch, getState }) => {
@@ -50,9 +64,6 @@ export const continueTask = createAsyncThunk<void, void, { state: RootState }>(
 export const stopTaskWork = createAsyncThunk<void, void, { state: RootState }>(
   "stopTaskWork",
   (_, { dispatch, getState }) => {
-    // if (!currentTaskSlice.selectSlice(getState()).hasPause) {
-    //   dispatch(tasksSlice.actions.incrementCurrentPomodoro())
-    // }
     dispatch(
       statisticInfo.actions.add(getState().currentTask, getState().timer)
     );
@@ -107,7 +118,6 @@ export const completeTask = createAsyncThunk<void, void, { state: RootState }>(
       )
     );
     const nextTask = getNextTask(getState());
-    console.log(nextTask);
     dispatch(
       currentTaskSlice.actions.completeTask(nextTask ? nextTask.id : undefined)
     );

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   RootState,
   currentTask,
@@ -8,17 +8,18 @@ import {
   editTask,
   incrementPomodoro,
   selectCanDecrement,
+  useAppDispatch,
 } from "store";
 import { Confirmation } from "../../../components/Confirmation";
 import { Menu } from "../../../components/Menu";
 import { MenuItem } from "../../../components/MenuItem";
-import { DeleteIcon } from "../../../components/icons/Delete";
-import { EditIcon } from "../../../components/icons/Edit";
-import { MinusIcon } from "../../../components/icons/Minus";
-import { PlusIcon } from "../../../components/icons/Plus";
+import { DeleteIcon } from "../../../components/icons/delete";
+import { EditIcon } from "../../../components/icons/edit";
+import { MinusIcon } from "../../../components/icons/minus";
+import { PlusIcon } from "../../../components/icons/plus";
 
 export function TaskMenu({ taskId }: { taskId: number }) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const canDecrement = useSelector((state: RootState) =>
     selectCanDecrement(state, taskId)
   );
