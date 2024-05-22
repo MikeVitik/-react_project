@@ -1,7 +1,7 @@
 {
   "name": "pomodoro",
   "version": "0.1.1",
-  "homepage": "https://mikevitik.github.io/pomodoro",
+  "homepage": "https://mikevitik.github.io/react_project",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.1",
@@ -43,7 +43,7 @@
   },
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
+    "deploy": "gh-pages -d build -o github",
     "start": "PORT=3500 craco start",
     "build": "craco build",
     "test": "craco test",
