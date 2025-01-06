@@ -1,0 +1,3 @@
+Bug template
+
+- [ ] Check test
